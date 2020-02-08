@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class LangVersionPostprocessor : AssetPostprocessor
+public class CSProjectPostprocessor : AssetPostprocessor
 {
 	#region Fields
 
