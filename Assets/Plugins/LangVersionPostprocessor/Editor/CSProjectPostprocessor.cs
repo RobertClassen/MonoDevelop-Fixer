@@ -37,8 +37,9 @@ public class CSProjectPostprocessor : AssetPostprocessor
 		string closeTag = string.Format("</{0}>", tag);
 		int startIndex = contents.IndexOf(openTag) + openTag.Length;
 		int endIndex = contents.IndexOf(closeTag);
-		return startIndex < 0 || endIndex < 0 ? contents : contents.Replace(
-			string.Format("{0}{1}{2}", openTag, contents.Substring(startIndex, endIndex - startIndex), closeTag), 
+		string oldValue = contents.Substring(startIndex, endIndex - startIndex);
+		return startIndex < 0 || endIndex < 0 || value == oldValue ? contents : contents.Replace(
+			string.Format("{0}{1}{2}", openTag, oldValue, closeTag), 
 			string.Format("{0}{1}{2}", openTag, value, closeTag));
 	}
 	#endregion
