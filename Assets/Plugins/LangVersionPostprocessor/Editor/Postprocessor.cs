@@ -6,7 +6,7 @@
 	using UnityEditor;
 	using UnityEngine;
 
-	public class CSProjectPostprocessor : AssetPostprocessor
+	internal class Postprocessor : AssetPostprocessor
 	{
 		#region Fields
 
@@ -23,20 +23,20 @@
 		#region Methods
 		public static string OnGeneratedCSProject(string path, string contents)
 		{
-			LangVersionPostprocessorSettings settings = 
-				Resources.Load<LangVersionPostprocessorSettings>("LangVersionPostprocessorSettings");
-			if(settings.DoOverride)
+			foreach(PropertyCollection propertyCollection in Resources.LoadAll<PropertyCollection>(string.Empty))
 			{
-				contents = SetProperty(contents, "LangVersion", settings.LangVersions[settings.SelectedIndex].Name);
+				if(propertyCollection.IsOverwriteEnabled)
+				{
+					contents = SetProperty(contents, propertyCollection.name, propertyCollection.Value);
+				}
 			}
-
 			return contents;
 		}
 
-		static string SetProperty(string contents, string tag, string value)
+		private static string SetProperty(string contents, string key, string value)
 		{
-			string openTag = string.Format("<{0}>", tag);
-			string closeTag = string.Format("</{0}>", tag);
+			string openTag = string.Format("<{0}>", key);
+			string closeTag = string.Format("</{0}>", key);
 			int startIndex = contents.IndexOf(openTag) + openTag.Length;
 			int endIndex = contents.IndexOf(closeTag);
 			string oldValue = contents.Substring(startIndex, endIndex - startIndex);

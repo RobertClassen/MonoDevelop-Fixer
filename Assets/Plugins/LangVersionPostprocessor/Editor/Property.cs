@@ -6,7 +6,7 @@
 	using UnityEngine;
 
 	[Serializable]
-	public class LangVersion
+	internal class Property
 	{
 		#region Fields
 		[SerializeField]
