@@ -8,9 +8,9 @@ public class LangVersion
 {
 	#region Fields
 	[SerializeField]
-	private string name;
+	private string name = string.Empty;
 	[SerializeField]
-	private string description;
+	private string description = string.Empty;
 	#endregion
 
 	#region Properties

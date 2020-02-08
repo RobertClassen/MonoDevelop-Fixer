@@ -11,9 +11,9 @@ public class LangVersionPostprocessorSettings : ScriptableObject
 	[SerializeField]
 	private List<LangVersion> langVersions = new List<LangVersion>();
 	[SerializeField]
-	private bool doOverride;
+	private bool doOverride = true;
 	[SerializeField]
-	private int selectedIndex;
+	private int selectedIndex = 0;
 	#endregion
 
 	#region Properties
@@ -31,10 +31,6 @@ public class LangVersionPostprocessorSettings : ScriptableObject
 		{
 			return doOverride;
 		}
-		set
-		{
-			doOverride = value;
-		}
 	}
 
 	public int SelectedIndex
@@ -42,10 +38,6 @@ public class LangVersionPostprocessorSettings : ScriptableObject
 		get
 		{
 			return selectedIndex;
-		}
-		set
-		{
-			selectedIndex = value;
 		}
 	}
 	#endregion

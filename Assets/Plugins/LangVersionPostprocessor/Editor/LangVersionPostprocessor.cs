@@ -6,11 +6,6 @@ using UnityEngine;
 
 public class LangVersionPostprocessor : AssetPostprocessor
 {
-	#region Constants
-	private const string openTag = "<LangVersion>";
-	private const string closeTag = "</LangVersion>";
-	#endregion
-
 	#region Fields
 
 	#endregion
@@ -30,19 +25,27 @@ public class LangVersionPostprocessor : AssetPostprocessor
 			Resources.Load<LangVersionPostprocessorSettings>("LangVersionPostprocessorSettings");
 		if(settings.DoOverride)
 		{
-			int startIndex = contents.IndexOf(openTag) + openTag.Length;
-			int endIndex = contents.IndexOf(closeTag);
-			int length = endIndex - startIndex;
-
-			if(startIndex >= 0 && endIndex >= 0)
-			{
-				contents = contents.Replace(
-					openTag + contents.Substring(startIndex, length) + closeTag, 
-					openTag + settings.LangVersions[settings.SelectedIndex].Name + closeTag);
-			}
+			contents = SetProperty(contents, "LangVersion", settings.LangVersions[settings.SelectedIndex].Name);
 		}
 
 		return contents;
+	}
+
+	static string SetProperty(string contents, string tag, string value)
+	{
+		string openTag = string.Format("<{0}>", tag);
+		string closeTag = string.Format("</{0}>", tag);
+		int startIndex = contents.IndexOf(openTag) + openTag.Length;
+		int endIndex = contents.IndexOf(closeTag);
+		return startIndex < 0 || endIndex < 0 ? contents : contents.Replace(
+			string.Format("{0}{1}{2}", openTag, contents.Substring(startIndex, endIndex - startIndex), closeTag), 
+			string.Format("{0}{1}{2}", openTag, value, closeTag));
+	}
+
+	[PreferenceItem("My Preferences")]
+	public static void PreferencesGUI()
+	{
+		
 	}
 	#endregion
 }
