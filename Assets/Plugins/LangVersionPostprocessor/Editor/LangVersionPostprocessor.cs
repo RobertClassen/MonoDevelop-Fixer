@@ -41,11 +41,5 @@ public class LangVersionPostprocessor : AssetPostprocessor
 			string.Format("{0}{1}{2}", openTag, contents.Substring(startIndex, endIndex - startIndex), closeTag), 
 			string.Format("{0}{1}{2}", openTag, value, closeTag));
 	}
-
-	[PreferenceItem("My Preferences")]
-	public static void PreferencesGUI()
-	{
-		
-	}
 	#endregion
 }
