@@ -1,41 +1,44 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-[Serializable]
-public class LangVersion
+﻿namespace CSProject
 {
-	#region Fields
-	[SerializeField]
-	private string name = string.Empty;
-	[SerializeField]
-	private string description = string.Empty;
-	#endregion
+	using System;
+	using System.Collections;
+	using System.Collections.Generic;
+	using UnityEngine;
 
-	#region Properties
-	public string Name
+	[Serializable]
+	public class LangVersion
 	{
-		get
+		#region Fields
+		[SerializeField]
+		private string name = string.Empty;
+		[SerializeField]
+		private string description = string.Empty;
+		#endregion
+
+		#region Properties
+		public string Name
 		{
-			return name;
+			get
+			{
+				return name;
+			}
 		}
-	}
 
-	public string Description
-	{
-		get
+		public string Description
 		{
-			return description;
+			get
+			{
+				return description;
+			}
 		}
+		#endregion
+
+		#region Constructor
+
+		#endregion
+
+		#region Methods
+
+		#endregion
 	}
-	#endregion
-
-	#region Constructor
-	
-	#endregion
-
-	#region Methods
-	
-	#endregion
 }

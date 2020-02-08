@@ -1,52 +1,57 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-[CreateAssetMenu]
-[Serializable]
-public class LangVersionPostprocessorSettings : ScriptableObject
+﻿namespace CSProject
 {
-	#region Fields
-	[SerializeField]
-	private List<LangVersion> langVersions = new List<LangVersion>();
-	[SerializeField]
-	private bool doOverride = true;
-	[SerializeField]
-	private int selectedIndex = 0;
-	#endregion
+	using System;
+	using System.Collections;
+	using System.Collections.Generic;
+	using UnityEngine;
+	using UnityEngine.Serialization;
 
-	#region Properties
-	public List<LangVersion> LangVersions
+	[CreateAssetMenu]
+	[Serializable]
+	public class LangVersionPostprocessorSettings : ScriptableObject
 	{
-		get
+		#region Fields
+		[FormerlySerializedAs("langVersions")]
+		[SerializeField]
+		private List<LangVersion> langVersions = new List<LangVersion>();
+		[SerializeField]
+		private bool doOverride = true;
+		[SerializeField]
+		private int selectedIndex = 0;
+		#endregion
+
+		#region Properties
+		public List<LangVersion> LangVersions
 		{
-			return langVersions;
+			get
+			{
+				return langVersions;
+			}
 		}
-	}
 
-	public bool DoOverride
-	{
-		get
+		public bool DoOverride
 		{
-			return doOverride;
+			get
+			{
+				return doOverride;
+			}
 		}
-	}
 
-	public int SelectedIndex
-	{
-		get
+		public int SelectedIndex
 		{
-			return selectedIndex;
+			get
+			{
+				return selectedIndex;
+			}
 		}
+		#endregion
+
+		#region Constructor
+
+		#endregion
+
+		#region Methods
+
+		#endregion
 	}
-	#endregion
-
-	#region Constructor
-	
-	#endregion
-
-	#region Methods
-	
-	#endregion
 }
