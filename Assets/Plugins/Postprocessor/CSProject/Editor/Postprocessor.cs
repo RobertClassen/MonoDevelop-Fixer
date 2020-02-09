@@ -6,7 +6,7 @@
 	using UnityEditor;
 	using UnityEngine;
 
-	internal class Postprocessor
+	internal partial class Postprocessor
 	{
 		#region Fields
 		private static Property[] properties = null;
@@ -51,18 +51,6 @@
 		}
 
 		#if UNITY_2018_3_OR_NEWER
-		private class SettingsProvider : UnityEditor.SettingsProvider
-		{
-			public SettingsProvider(string path, SettingsScope scope = SettingsScope.User) : base(path, scope)
-			{
-			}
-
-			public override void OnGUI(string searchContext)
-			{
-				Draw();
-			}
-		}
-
 		[SettingsProvider]
 		private static UnityEditor.SettingsProvider GetSettingsProvider()
 		{
