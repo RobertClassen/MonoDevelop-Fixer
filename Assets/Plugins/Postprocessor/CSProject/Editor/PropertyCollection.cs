@@ -1,4 +1,4 @@
-﻿namespace CSProject
+﻿namespace Postprocessors
 {
 	using System;
 	using System.Collections;
