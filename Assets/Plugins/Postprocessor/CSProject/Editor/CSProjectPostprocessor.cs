@@ -9,20 +9,20 @@
 	internal class CSProjectPostprocessor
 	{
 		#region Fields
-		private static PropertyCollection[] propertyCollections = null;
+		private static Property[] properties = null;
 		#endregion
 
 		#region Properties
-		public static PropertyCollection[] PropertyCollections
+		public static Property[] Properties
 		{
 			get
 			{
-				if(propertyCollections == null)
+				if(properties == null)
 				{
-					propertyCollections = Resources.LoadAll<PropertyCollection>(string.Empty);
-					Debug.Log("Updated propertyCollections, found " + propertyCollections.Length);
+					properties = Resources.LoadAll<Property>(string.Empty);
+					Debug.Log("Updated properties, found " + properties.Length);
 				}
-				return propertyCollections;
+				return properties;
 			}
 		}
 		#endregion
@@ -34,11 +34,11 @@
 		#region Methods
 		public static string OnGeneratedCSProject(string path, string contents)
 		{
-			foreach(PropertyCollection propertyCollection in PropertyCollections)
+			foreach(Property property in Properties)
 			{
-				if(propertyCollection.IsOverwriteEnabled)
+				if(property.IsOverwriteEnabled)
 				{
-					contents = SetProperty(contents, propertyCollection.name, propertyCollection.Value);
+					contents = SetProperty(contents, property.name, property.Value);
 				}
 			}
 			return contents;
@@ -79,7 +79,7 @@
 		#endif
 		private static void DrawSettings()
 		{
-			foreach(PropertyCollection propertyCollection in PropertyCollections)
+			foreach(Property propertyCollection in Properties)
 			{
 				propertyCollection.Draw();
 			}

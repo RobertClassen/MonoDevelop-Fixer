@@ -9,7 +9,7 @@
 
 	[CreateAssetMenu]
 	[Serializable]
-	internal class PropertyCollection : ScriptableObject
+	internal class Property : ScriptableObject
 	{
 		#region Fields
 		[FormerlySerializedAs("properties")]
