@@ -6,7 +6,7 @@
 	using UnityEditor;
 	using UnityEngine;
 
-	internal class CSProject
+	internal class CSProjectPostprocessor
 	{
 		#region Fields
 		private static PropertyCollection[] propertyCollections = null;
@@ -81,8 +81,8 @@
 		{
 			foreach(PropertyCollection propertyCollection in PropertyCollections)
 			{
-				EditorGUILayout.LabelField(propertyCollection.name);
-
+				EditorGUILayout.LabelField(propertyCollection.name, EditorStyles.boldLabel);
+				propertyCollection.DrawProperties();
 			}
 		}
 		#endregion

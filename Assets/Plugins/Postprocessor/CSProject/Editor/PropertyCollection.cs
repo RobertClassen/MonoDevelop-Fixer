@@ -3,6 +3,7 @@
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using UnityEditor;
 	using UnityEngine;
 
 	[CreateAssetMenu]
@@ -41,7 +42,24 @@
 		#endregion
 
 		#region Methods
+		public void DrawProperties()
+		{
+			for(int i = 0; i < properties.Count; i++)
+			{
+				using(new EditorGUILayout.HorizontalScope())
+				{
+					using(new EditorGUI.DisabledScope(selectedIndex == i))
+					{
+						if(GUILayout.Button(properties[i].Name, GUILayout.Width(60f)))
+						{
+							selectedIndex = i;
+						}
+					}
 
+					EditorGUILayout.LabelField(properties[i].Description);
+				}
+			}
+		}
 		#endregion
 	}
 }
