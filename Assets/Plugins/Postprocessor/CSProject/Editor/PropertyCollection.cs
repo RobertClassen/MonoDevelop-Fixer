@@ -5,14 +5,16 @@
 	using System.Collections.Generic;
 	using UnityEditor;
 	using UnityEngine;
+	using UnityEngine.Serialization;
 
 	[CreateAssetMenu]
 	[Serializable]
 	internal class PropertyCollection : ScriptableObject
 	{
 		#region Fields
+		[FormerlySerializedAs("properties")]
 		[SerializeField]
-		private List<Property> properties = new List<Property>();
+		private List<Value> values = new List<Value>();
 		[SerializeField]
 		private bool isOverwriteEnabled = true;
 		[SerializeField]
@@ -32,7 +34,7 @@
 		{
 			get
 			{
-				return properties[selectedIndex].Name;
+				return values[selectedIndex].Name;
 			}
 		}
 		#endregion
@@ -45,19 +47,19 @@
 		public void Draw()
 		{
 			EditorGUILayout.LabelField(name, EditorStyles.boldLabel);
-			for(int i = 0; i < properties.Count; i++)
+			for(int i = 0; i < values.Count; i++)
 			{
 				using(new EditorGUILayout.HorizontalScope())
 				{
 					using(new EditorGUI.DisabledScope(selectedIndex == i))
 					{
-						if(GUILayout.Button(properties[i].Name, GUILayout.Width(75f)))
+						if(GUILayout.Button(values[i].Name, GUILayout.Width(75f)))
 						{
 							selectedIndex = i;
 						}
 					}
 
-					EditorGUILayout.LabelField(properties[i].Description);
+					EditorGUILayout.LabelField(values[i].Description);
 				}
 			}
 		}

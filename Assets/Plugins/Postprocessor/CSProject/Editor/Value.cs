@@ -6,7 +6,7 @@
 	using UnityEngine;
 
 	[Serializable]
-	internal class Property
+	internal class Value
 	{
 		#region Fields
 		[SerializeField]
