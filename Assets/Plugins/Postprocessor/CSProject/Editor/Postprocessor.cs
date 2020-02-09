@@ -6,7 +6,7 @@
 	using UnityEditor;
 	using UnityEngine;
 
-	internal class CSProjectPostprocessor
+	internal class Postprocessor
 	{
 		#region Fields
 		private static Property[] properties = null;
