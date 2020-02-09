@@ -20,7 +20,8 @@ MonoBehaviour:
     description: The compiler accepts only syntax that is included in ISO/IEC 23270:2003
       C# (1.0/1.2)
   - name: ISO-2
-    description: 
+    description: The compiler accepts only syntax that is included in ISO/IEC 23270:2006
+      C# (2.0).
   - name: 3
     description: The compiler accepts only syntax that is included in C# 3.0 or lower.
   - name: 4
@@ -37,7 +38,16 @@ MonoBehaviour:
     description: The compiler accepts only syntax that is included in C# 7.2 or lower.
   - name: 7.3
     description: The compiler accepts only syntax that is included in C# 7.3 or lower.
+  - name: 8.0
+    description: The compiler accepts only syntax that is included in C# 8.0 or lower.
+  - name: latestMajor
+    description: The compiler accepts all valid language syntax from the latest major
+      version that it can support.
   - name: latest
-    description: The compiler accepts all valid language syntax that it can support.
-  doOverride: 1
+    description: The compiler accepts all valid language syntax from the latest version
+      (including minor releases) that it can support.
+  - name: preview
+    description: The compiler accepts all valid language syntax from the latest preview
+      version that it can support.
+  isOverwriteEnabled: 1
   selectedIndex: 6

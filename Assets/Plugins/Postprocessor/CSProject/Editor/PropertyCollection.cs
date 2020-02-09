@@ -42,15 +42,16 @@
 		#endregion
 
 		#region Methods
-		public void DrawProperties()
+		public void Draw()
 		{
+			EditorGUILayout.LabelField(name, EditorStyles.boldLabel);
 			for(int i = 0; i < properties.Count; i++)
 			{
 				using(new EditorGUILayout.HorizontalScope())
 				{
 					using(new EditorGUI.DisabledScope(selectedIndex == i))
 					{
-						if(GUILayout.Button(properties[i].Name, GUILayout.Width(60f)))
+						if(GUILayout.Button(properties[i].Name, GUILayout.Width(75f)))
 						{
 							selectedIndex = i;
 						}

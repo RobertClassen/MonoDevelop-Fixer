@@ -72,17 +72,16 @@
 		[SettingsProvider]
 		private static SettingsProvider GetSettingsProvider()
 		{
-			return new CSProjectPostprocessorSettingsProvider("Preferences/CSProjectPostprocessor");
+			return new CSProjectPostprocessorSettingsProvider("Preferences/CSProject");
 		}
 		#else
-		[PreferenceItem("CSProjectPostprocessor")]
+		[PreferenceItem("CSProject")]
 		#endif
 		private static void DrawSettings()
 		{
 			foreach(PropertyCollection propertyCollection in PropertyCollections)
 			{
-				EditorGUILayout.LabelField(propertyCollection.name, EditorStyles.boldLabel);
-				propertyCollection.DrawProperties();
+				propertyCollection.Draw();
 			}
 		}
 		#endregion
