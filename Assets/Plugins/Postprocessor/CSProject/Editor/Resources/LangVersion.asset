@@ -49,5 +49,6 @@ MonoBehaviour:
   - name: preview
     description: The compiler accepts all valid language syntax from the latest preview
       version that it can support.
-  isOverwriteEnabled: 1
-  selectedIndex: 6
+  infoURL: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/configure-language-version
+  selectedEditMode: 1
+  selectedValueIndex: 6

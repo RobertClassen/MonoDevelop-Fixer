@@ -1,40 +1,53 @@
-﻿namespace Postprocessors
+﻿namespace CSProject
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEditor;
 	using UnityEngine;
-	using UnityEngine.Serialization;
 
 	[CreateAssetMenu]
 	[Serializable]
-	internal class Property : ScriptableObject
+	internal partial class Property : ScriptableObject
 	{
+		#region Constants
+		private const float buttonWidth = 75f;
+		#endregion
+
+		#region Enums
+		public enum EditMode
+		{
+			Ignore,
+			Overwrite,
+		}
+		#endregion
+
 		#region Fields
-		[FormerlySerializedAs("properties")]
 		[SerializeField]
 		private List<Value> values = new List<Value>();
 		[SerializeField]
-		private bool isOverwriteEnabled = true;
+		private string infoURL = string.Empty;
+
 		[SerializeField]
-		private int selectedIndex = 0;
+		private EditMode selectedEditMode = EditMode.Overwrite;
+		[SerializeField]
+		private int selectedValueIndex = 0;
 		#endregion
 
 		#region Properties
-		public bool IsOverwriteEnabled
+		public EditMode SelectedEditMode
 		{
 			get
 			{
-				return isOverwriteEnabled;
+				return selectedEditMode;
 			}
 		}
 
-		public string Value
+		public string SelectedValue
 		{
 			get
 			{
-				return values[selectedIndex].Name;
+				return values[selectedValueIndex].Name;
 			}
 		}
 		#endregion
@@ -44,22 +57,60 @@
 		#endregion
 
 		#region Methods
+		public string ApplyTo(string contents)
+		{
+			string startTag = string.Format("<{0}>", name);
+			string endTag = string.Format("</{0}>", name);
+			int startIndex = contents.IndexOf(startTag);
+			int endIndex = contents.IndexOf(endTag);
+			string oldValue = contents.Substring(startIndex + startTag.Length, endIndex - startIndex - startTag.Length);
+			return startIndex < 0 || endIndex < 0 || SelectedValue == oldValue ? contents : contents.Replace(
+				string.Format("{0}{1}{2}", startTag, oldValue, endTag), 
+				string.Format("{0}{1}{2}", startTag, SelectedValue, endTag));
+		}
+
 		public void Draw()
 		{
-			EditorGUILayout.LabelField(name, EditorStyles.boldLabel);
+			using(new EditorGUILayout.HorizontalScope())
+			{
+				GUILayout.Label(name, EditorStyles.boldLabel);
+				DrawInfoURL();
+				selectedEditMode = (EditMode)EditorGUILayout.EnumPopup(selectedEditMode, GUILayout.Width(buttonWidth));
+				GUILayout.FlexibleSpace();
+			}
+			if(selectedEditMode == EditMode.Ignore)
+			{
+				return;
+			}
+
+			DrawValues();
+		}
+
+		private void DrawInfoURL()
+		{
+			if(!string.IsNullOrEmpty(infoURL))
+			{
+				if(GUILayout.Button(new GUIContent("Info", infoURL), GUILayout.Width(buttonWidth)))
+				{
+					Help.BrowseURL(infoURL);
+				}
+			}
+		}
+
+		private void DrawValues()
+		{
 			for(int i = 0; i < values.Count; i++)
 			{
 				using(new EditorGUILayout.HorizontalScope())
 				{
-					using(new EditorGUI.DisabledScope(selectedIndex == i))
+					using(new EditorGUI.DisabledScope(selectedValueIndex == i))
 					{
-						if(GUILayout.Button(values[i].Name, GUILayout.Width(75f)))
+						if(GUILayout.Button(values[i].Name, GUILayout.Width(buttonWidth)))
 						{
-							selectedIndex = i;
+							selectedValueIndex = i;
 						}
 					}
-
-					EditorGUILayout.LabelField(values[i].Description);
+					GUILayout.Label(values[i].Description);
 				}
 			}
 		}

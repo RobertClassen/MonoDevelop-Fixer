@@ -1,44 +1,47 @@
-﻿namespace Postprocessors
+﻿namespace CSProject
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
 
-	[Serializable]
-	internal class Value
+	internal partial class Property
 	{
-		#region Fields
-		[SerializeField]
-		private string name = string.Empty;
-		[SerializeField]
-		private string description = string.Empty;
-		#endregion
-
-		#region Properties
-		public string Name
+		[Serializable]
+		internal class Value
 		{
-			get
+			#region Fields
+			[SerializeField]
+			private string name = string.Empty;
+			[SerializeField]
+			private string description = string.Empty;
+			#endregion
+
+			#region Properties
+			public string Name
 			{
-				return name;
+				get
+				{
+					return name;
+				}
 			}
-		}
 
-		public string Description
-		{
-			get
+			public string Description
 			{
-				return description;
+				get
+				{
+					return description;
+				}
 			}
+			#endregion
+
+			#region Constructor
+
+			#endregion
+
+			#region Methods
+
+			#endregion
 		}
-		#endregion
-
-		#region Constructor
-
-		#endregion
-
-		#region Methods
-
-		#endregion
 	}
 }

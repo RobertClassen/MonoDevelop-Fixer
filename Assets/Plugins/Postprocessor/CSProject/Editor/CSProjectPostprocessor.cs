@@ -1,4 +1,4 @@
-﻿namespace Postprocessors
+﻿namespace CSProject
 {
 	using System;
 	using System.Collections;
@@ -20,7 +20,6 @@
 				if(properties == null)
 				{
 					properties = Resources.LoadAll<Property>(string.Empty);
-					Debug.Log("Updated properties, found " + properties.Length);
 				}
 				return properties;
 			}
@@ -32,56 +31,52 @@
 		#endregion
 
 		#region Methods
+		/// <summary>
+		/// This method is called automatically by Unity after a .csproj file has been updated, see
+		/// https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/AssetPostprocessor.cs#L154-L167
+		/// </summary>
+		/// <param name="path">Path.</param>
+		/// <param name="contents">Contents.</param>
 		public static string OnGeneratedCSProject(string path, string contents)
 		{
 			foreach(Property property in Properties)
 			{
-				if(property.IsOverwriteEnabled)
+				if(property.SelectedEditMode == Property.EditMode.Ignore)
 				{
-					contents = SetProperty(contents, property.name, property.Value);
+					continue;
 				}
+				contents = property.ApplyTo(contents);
 			}
 			return contents;
 		}
 
-		private static string SetProperty(string contents, string key, string value)
-		{
-			string openTag = string.Format("<{0}>", key);
-			string closeTag = string.Format("</{0}>", key);
-			int startIndex = contents.IndexOf(openTag) + openTag.Length;
-			int endIndex = contents.IndexOf(closeTag);
-			string oldValue = contents.Substring(startIndex, endIndex - startIndex);
-			return startIndex < 0 || endIndex < 0 || value == oldValue ? contents : contents.Replace(
-				string.Format("{0}{1}{2}", openTag, oldValue, closeTag), 
-				string.Format("{0}{1}{2}", openTag, value, closeTag));
-		}
-
 		#if UNITY_2018_3_OR_NEWER
-		private class CSProjectPostprocessorSettingsProvider : SettingsProvider
+		private class SettingsProvider : UnityEditor.SettingsProvider
 		{
-			public CSProjectPostprocessorSettingsProvider(string path, SettingsScope scopes = SettingsScope.User) : base(path, scopes)
+			public SettingsProvider(string path, SettingsScope scope = SettingsScope.User) : base(path, scope)
 			{
 			}
 
 			public override void OnGUI(string searchContext)
 			{
-				DrawSettings();
+				Draw();
 			}
 		}
 
 		[SettingsProvider]
-		private static SettingsProvider GetSettingsProvider()
+		private static UnityEditor.SettingsProvider GetSettingsProvider()
 		{
-			return new CSProjectPostprocessorSettingsProvider("Preferences/CSProject");
+			return new SettingsProvider("Preferences/CSProject");
 		}
 		#else
 		[PreferenceItem("CSProject")]
 		#endif
-		private static void DrawSettings()
+		private static void Draw()
 		{
 			foreach(Property propertyCollection in Properties)
 			{
 				propertyCollection.Draw();
+				EditorGUILayout.Space();
 			}
 		}
 		#endregion
