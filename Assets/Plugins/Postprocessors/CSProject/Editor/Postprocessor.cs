@@ -6,7 +6,11 @@
 	using UnityEditor;
 	using UnityEngine;
 
-	internal partial class Postprocessor
+	/// <summary>
+	/// This class must derive from "AssetPostprocessor" since Unity searches for all classes which derive from it 
+	/// and tries to call certain static methods on them, one of which is the "OnGeneratedCSProject" method below.
+	/// </summary>
+	internal partial class Postprocessor : AssetPostprocessor
 	{
 		#region Fields
 		private static Property[] properties = null;
@@ -39,6 +43,7 @@
 		/// <param name="contents">Contents.</param>
 		public static string OnGeneratedCSProject(string path, string contents)
 		{
+			//Debug.Log(path);
 			foreach(Property property in Properties)
 			{
 				if(property.SelectedEditMode == Property.EditMode.Ignore)
