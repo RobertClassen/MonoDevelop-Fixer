@@ -6,7 +6,13 @@
 	using UnityEditor;
 	using UnityEngine;
 
-	[CreateAssetMenu]
+	/// <summary>
+	/// Describes which property with the same name should be overwritten in *.csproj files.
+	/// </summary>
+	/// <remarks>
+	/// Instances must be placed in the Editor\Resources\ folder in order for the <see cref="Postprocessor"/> to find them.
+	/// </remarks>
+	[CreateAssetMenu(menuName = "Postprocessors/CSProject/Property")]
 	[Serializable]
 	internal partial class Property : ScriptableObject
 	{
@@ -43,7 +49,7 @@
 			}
 		}
 
-		public string SelectedValue
+		private string SelectedValue
 		{
 			get
 			{
@@ -57,6 +63,11 @@
 		#endregion
 
 		#region Methods
+		/// <summary>
+		/// Checks if a property with the same name exists in the passed contents a *csproj file and overwrites it.
+		/// </summary>
+		/// <returns>The contents</returns>
+		/// <param name="contents">Contents.</param>
 		public string ApplyTo(string contents)
 		{
 			string startTag = string.Format("<{0}>", name);
