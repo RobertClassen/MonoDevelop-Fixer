@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb15f0e38429adf40b9e8a0224e015e1, type: 3}
+  m_Name: LangVersionPostprocessorSettings
+  m_EditorClassIdentifier: 
+  langVersions:
+  - name: Default
+    description: The compiler accepts all valid language syntax from the latest major
+      version that it can support.
+  - name: ISO-1
+    description: The compiler accepts only syntax that is included in ISO/IEC 23270:2003
+      C# (1.0/1.2)
+  - name: ISO-2
+    description: 
+  - name: 3
+    description: The compiler accepts only syntax that is included in C# 3.0 or lower.
+  - name: 4
+    description: The compiler accepts only syntax that is included in C# 4.0 or lower.
+  - name: 5
+    description: The compiler accepts only syntax that is included in C# 5.0 or lower.
+  - name: 6
+    description: The compiler accepts only syntax that is included in C# 6.0 or lower.
+  - name: 7
+    description: The compiler accepts only syntax that is included in C# 7.0 or lower.
+  - name: 7.1
+    description: The compiler accepts only syntax that is included in C# 7.1 or lower.
+  - name: 7.2
+    description: The compiler accepts only syntax that is included in C# 7.2 or lower.
+  - name: 7.3
+    description: The compiler accepts only syntax that is included in C# 7.3 or lower.
+  - name: latest
+    description: The compiler accepts all valid language syntax that it can support.
+  doOverride: 1
+  selectedIndex: 4
