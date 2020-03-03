@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb15f0e38429adf40b9e8a0224e015e1, type: 3}
-  m_Name: LangVersionPostprocessorSettings
+  m_Script: {fileID: 11500000, guid: c2191ae1bb1d4dc4c99a97ffd0d49fd4, type: 3}
+  m_Name: LangVersion
   m_EditorClassIdentifier: 
-  langVersions:
+  values:
   - name: Default
     description: The compiler accepts all valid language syntax from the latest major
       version that it can support.
@@ -20,7 +20,8 @@ MonoBehaviour:
     description: The compiler accepts only syntax that is included in ISO/IEC 23270:2003
       C# (1.0/1.2)
   - name: ISO-2
-    description: 
+    description: The compiler accepts only syntax that is included in ISO/IEC 23270:2006
+      C# (2.0).
   - name: 3
     description: The compiler accepts only syntax that is included in C# 3.0 or lower.
   - name: 4
@@ -37,7 +38,17 @@ MonoBehaviour:
     description: The compiler accepts only syntax that is included in C# 7.2 or lower.
   - name: 7.3
     description: The compiler accepts only syntax that is included in C# 7.3 or lower.
+  - name: 8.0
+    description: The compiler accepts only syntax that is included in C# 8.0 or lower.
+  - name: latestMajor
+    description: The compiler accepts all valid language syntax from the latest major
+      version that it can support.
   - name: latest
-    description: The compiler accepts all valid language syntax that it can support.
-  doOverride: 1
-  selectedIndex: 4
+    description: The compiler accepts all valid language syntax from the latest version
+      (including minor releases) that it can support.
+  - name: preview
+    description: The compiler accepts all valid language syntax from the latest preview
+      version that it can support.
+  infoURL: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/configure-language-version
+  selectedEditMode: 1
+  selectedValueIndex: 6
