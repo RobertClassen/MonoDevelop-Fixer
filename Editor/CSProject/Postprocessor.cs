@@ -27,6 +27,7 @@
 		#region Constants
 		private const string fileExtension = "*.csproj";
 		private const float buttonWidth = 60f;
+		private const float spaceWidth = 20f;
 		#endregion
 
 		#region Fields
@@ -41,7 +42,7 @@
 			{
 				if(filePaths == null)
 				{
-					filePaths = Directory.GetFiles(Path.GetFullPath(Application.dataPath + "/.."), fileExtension);
+					filePaths = Directory.GetFiles(Path.GetFullPath(string.Format("{0}/..", Application.dataPath)), fileExtension);
 				}
 				return filePaths;
 			}
@@ -92,13 +93,9 @@
 		{
 			foreach(Property property in Properties)
 			{
-				if(property.SelectedEditMode == Property.EditMode.Ignore)
-				{
-					continue;
-				}
 				contents = property.ApplyTo(contents);
 			}
-			Debug.Log("[Postprocessor] File has been updated: " + path);
+			Debug.LogFormat("[Postprocessor] File has been updated: {0}", path);
 			return contents;
 		}
 
@@ -114,7 +111,7 @@
 		private static void Draw()
 		{
 			DrawFiles();
-			EditorGUILayout.Space();
+			EditorGUILayout.LabelField(GUIContent.none, GUI.skin.horizontalSlider);
 			DrawProperties();
 		}
 
@@ -122,33 +119,65 @@
 		{
 			using(new EditorGUILayout.HorizontalScope())
 			{
-				if(GUILayout.Button("Refresh", GUILayout.Width(buttonWidth)))
+				GUILayout.Label("The following *.csproj files will be updated by the Postprocessor:", EditorStyles.boldLabel);
+				GUILayout.FlexibleSpace();
+				if(GUILayout.Button("Update", GUILayout.Width(buttonWidth)))
+				{
+					UpdateAllCSProjectFiles();
+				}
+				if(GUILayout.Button("Search", GUILayout.Width(buttonWidth)))
 				{
 					filePaths = null;
 					Debug.Log("[Postprocessor] The list of *csproj files has been refreshed.");
 				}
-				GUILayout.Label("The following *.csproj files will be updated by the Postprocessor:", EditorStyles.boldLabel);
-				GUILayout.FlexibleSpace();
 			}
-			for(int i = 0; i < FilePaths.Length; i++)
+			foreach(string filePath in FilePaths)
 			{
 				using(new EditorGUILayout.HorizontalScope())
 				{
+					GUILayout.Space(spaceWidth);
+					GUILayout.Label(filePath);
+					GUILayout.FlexibleSpace();
 					if(GUILayout.Button("Show", GUILayout.Width(buttonWidth)))
 					{
-						EditorUtility.RevealInFinder(filePaths[i]);
+						EditorUtility.RevealInFinder(filePath);
 					}
-					GUILayout.Label(filePaths[i]);
 				}
 			}
 		}
 
 		private static void DrawProperties()
 		{
-			foreach(Property propertyCollection in Properties)
+			using(new EditorGUILayout.HorizontalScope())
 			{
-				propertyCollection.Draw();
+				GUILayout.Label(string.Format("Found {0} Properties: ", (Properties != null ? properties.Length : 0)), EditorStyles.boldLabel);
+				GUILayout.FlexibleSpace();
+				if(GUILayout.Button("Search", GUILayout.Width(buttonWidth)))
+				{
+					properties = null;
+					Debug.Log("[Postprocessor] The list of Properties has been refreshed.");
+				}
+			}
+			ValidateProperties();
+			foreach(Property property in Properties)
+			{
 				EditorGUILayout.Space();
+				property.Draw();
+			}
+		}
+
+		/// <summary>
+		/// Removes missing references if a Property has been removed since the last call to avoid NullReferenceExceptions.
+		/// </summary>
+		private static void ValidateProperties()
+		{
+			foreach(Property property in Properties)
+			{
+				if(property == null)
+				{
+					properties = null;
+					return;
+				}
 			}
 		}
 		#endregion
