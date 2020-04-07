@@ -1,8 +1,9 @@
-﻿namespace CSProject
+﻿namespace RCDev.Postprocessors.CSProject
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
 	using UnityEditor;
 	using UnityEngine;
 
@@ -17,7 +18,9 @@
 	internal partial class Property : ScriptableObject
 	{
 		#region Constants
-		private const float buttonWidth = 75f;
+		private const float popupWidth = 75f;
+		private const float buttonWidth = 60f;
+		private const float spaceWidth = 20f;
 		#endregion
 
 		#region Enums
@@ -31,6 +34,8 @@
 		#region Fields
 		[SerializeField]
 		private List<Value> values = new List<Value>();
+		[NonSerialized]
+		private string[] valueNames = null;
 		[SerializeField]
 		private string infoURL = string.Empty;
 
@@ -41,19 +46,23 @@
 		#endregion
 
 		#region Properties
-		public EditMode SelectedEditMode
-		{
-			get
-			{
-				return selectedEditMode;
-			}
-		}
-
 		private string SelectedValue
 		{
 			get
 			{
 				return values[selectedValueIndex].Name;
+			}
+		}
+
+		private string[] ValueNames
+		{
+			get
+			{
+				if(valueNames == null)
+				{
+					valueNames = values.Select(value => value.Name).ToArray();
+				}
+				return valueNames;
 			}
 		}
 		#endregion
@@ -70,13 +79,17 @@
 		/// <param name="contents">Contents.</param>
 		public string ApplyTo(string contents)
 		{
+			if(selectedEditMode == Property.EditMode.Ignore)
+			{
+				return contents;
+			}
+
 			string startTag = string.Format("<{0}>", name);
 			string endTag = string.Format("</{0}>", name);
-			int startIndex = contents.IndexOf(startTag);
+			int startIndex = contents.IndexOf(startTag) + startTag.Length;
 			int endIndex = contents.IndexOf(endTag);
-			string oldValue = contents.Substring(startIndex + startTag.Length, endIndex - startIndex - startTag.Length);
-			return startIndex < 0 || endIndex < 0 || SelectedValue == oldValue ? contents : contents.Replace(
-				string.Format("{0}{1}{2}", startTag, oldValue, endTag), 
+			return startIndex < startTag.Length || endIndex < 0 ? contents : contents.Replace(
+				string.Format("{0}{1}{2}", startTag, contents.Substring(startIndex, endIndex - startIndex), endTag), 
 				string.Format("{0}{1}{2}", startTag, SelectedValue, endTag));
 		}
 
@@ -84,17 +97,17 @@
 		{
 			using(new EditorGUILayout.HorizontalScope())
 			{
-				GUILayout.Label(name, EditorStyles.boldLabel);
-				DrawInfoURL();
-				selectedEditMode = (EditMode)EditorGUILayout.EnumPopup(selectedEditMode, GUILayout.Width(buttonWidth));
+				selectedEditMode = (EditMode)EditorGUILayout.EnumPopup(selectedEditMode, GUILayout.Width(popupWidth));
+				GUILayout.Label(string.Format("<b>{0}</b>", name), GUIStyleUtility.RichTextLabel);
+				if(selectedEditMode != EditMode.Ignore && selectedValueIndex < values.Count)
+				{
+					GUILayout.Label("to");
+					selectedValueIndex = EditorGUILayout.Popup(selectedValueIndex, ValueNames, GUILayout.Width(popupWidth));
+				}
 				GUILayout.FlexibleSpace();
+				DrawInfoURL();
 			}
-			if(selectedEditMode == EditMode.Ignore)
-			{
-				return;
-			}
-
-			DrawValues();
+			DrawDescription();
 		}
 
 		private void DrawInfoURL()
@@ -108,20 +121,23 @@
 			}
 		}
 
-		private void DrawValues()
+		private void DrawDescription()
 		{
-			for(int i = 0; i < values.Count; i++)
+			if(selectedEditMode == EditMode.Ignore)
 			{
-				using(new EditorGUILayout.HorizontalScope())
+				return;
+			}
+
+			using(new EditorGUILayout.HorizontalScope())
+			{
+				GUILayout.Space(spaceWidth);
+				if(selectedValueIndex < values.Count)
 				{
-					using(new EditorGUI.DisabledScope(selectedValueIndex == i))
-					{
-						if(GUILayout.Button(values[i].Name, GUILayout.Width(buttonWidth)))
-						{
-							selectedValueIndex = i;
-						}
-					}
-					GUILayout.Label(values[i].Description);
+					GUILayout.Label(values[selectedValueIndex].Description);
+				}
+				else
+				{
+					EditorGUILayout.HelpBox("This Property has no possible values to select from.", MessageType.Warning);
 				}
 			}
 		}

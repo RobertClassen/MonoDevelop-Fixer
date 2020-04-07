@@ -1,0 +1,14 @@
+{
+  "name": "com.rcdev.postprocessors",
+  "version": "3.0.0",
+  "displayName": "Postprocessors",
+  "description": "This package contains a Postprocessor for *.csproj files to overwrite certain properties inside of them.",
+  "keywords": [
+    "Postprocessor"
+  ],
+  "author": {
+    "name": "Robert Classen",
+    "email": "Robert.Classen.dev@gmail.com",
+    "url": "https://github.com/RobertClassen"
+  }
+}
