@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added LICENSE (MIT)
 - Added README
-- ADDED CHANGELOG
+- Added CHANGELOG
 
 ### Changed
 - Turned project from plugin into package for easier distribution and implementation into other projects.
@@ -19,7 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2020-03-03
 ### Added
-- Added Entry in the Edit/Preferences menu to be able to able to set Property settings more easily.
+- Added menu in the "Edit/Preferences..." window to be able to set Property settings more easily.
+- Added "Tools/Postprocessors/Update *.csproj files" menu item to update files manually if Unity ever fails to do so automatically (e.g. when there are compilation errors).
 
 ### Changed
 - Made Postprocessor more generic to be able to use it for different Properties other than "LangVersion" as well if needed.

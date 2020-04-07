@@ -12,16 +12,16 @@ Unity frequently rebuilds these 4 different *.csproj files (if they exist):
 
 Doing this resets the "LangVersion" property within them to a value matching the newest version required by any script or *.dll in the project files.
 
-In my case this caused problems with the MonoDevelop IDE which would stop working correctly if the value was set to an unsupported version (no more code-completion, no more code-highlighting, no more error checking, no more options like "Go to Reference" (F12) etc.) so I wrote this little plugin to fix that by automatically setting the property to a supported value again each time.
+In my case this caused problems with the MonoDevelop IDE which would stop working correctly if the value was set to an unsupported version (no more code-completion, no more code-highlighting, no more error checking, no more options like "Go to Reference" (F12), etc.) so I wrote this little package to fix that by automatically setting the property to a supported value again each time.
 
 ## Setup
 
 ### Installing from a Git URL (recommended)
-See [here](https://docs.unity3d.com/Manual/upm-ui-giturl.html) for how to install packages from a Git URL by using the Unity Package Manager.
+See [here](https://docs.unity3d.com/Manual/upm-ui-giturl.html) for how to install packages from a Git URL by using the Unity Package Manager.  
 See [here](https://docs.unity3d.com/Manual/upm-git.html) for how to do so manually by editing the "manifest.json" file in <your project folder>/Packages/.
 
 ### Installing a local package (alternative)
-See [here](https://docs.unity3d.com/Manual/upm-ui-local.html) for how to install packages from a local folder using the Unity Package Manager.
+See [here](https://docs.unity3d.com/Manual/upm-ui-local.html) for how to install packages from a local folder using the Unity Package Manager.  
 See [here](https://docs.unity3d.com/Manual/upm-localpath.html) for how to do so manually by editing the "manifest.json" file in <your project folder>/Packages/.
 
 ## Usage
