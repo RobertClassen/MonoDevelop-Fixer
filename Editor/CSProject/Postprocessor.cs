@@ -4,6 +4,7 @@
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.IO;
+	using System.Xml.Linq;
 	using UnityEditor;
 	using UnityEngine;
 
@@ -91,12 +92,53 @@
 
 		private static string ApplyProperties(string path, string contents)
 		{
-			foreach(Property property in Properties)
+			XDocument xDocument;
+			using(StringReader stringReader = new StringReader(contents))
 			{
-				contents = property.ApplyTo(contents);
+				xDocument = XDocument.Load(stringReader);
+				foreach(Property property in Properties)
+				{
+					if(property.SelectedEditMode == Property.EditMode.Ignore)
+					{
+						continue;
+					}
+					ApplyProperties(xDocument.Root, property, 0);
+				}
+			}
+			using(StringWriter stringWriter = new StringWriter())
+			{
+				xDocument.Save(stringWriter);
+				contents = stringWriter.ToString();
 			}
 			Debug.LogFormat("[Postprocessor] File has been updated: {0}", path);
 			return contents;
+		}
+
+		/// <summary>
+		/// Recursively iterates over XML tree and applies the selected value of the passed Property if the name matches.
+		/// </summary>
+		private static void ApplyProperties(XElement xElement, Property property, int depth)
+		{
+			foreach(XElement child in xElement.Elements())
+			{
+				//TODO: compare attributes
+				if(child.Name.LocalName != property.Tags[depth])
+				{
+					return;
+				}
+
+				if(depth < property.Tags.Length - 1)
+				{
+					if(child.NodeType == System.Xml.XmlNodeType.Element && child.HasElements)
+					{
+						ApplyProperties(child, property, depth + 1);
+					}
+				}
+				else
+				{
+					child.Value = property.SelectedValue;
+				}
+			}
 		}
 
 		#if UNITY_2018_3_OR_NEWER

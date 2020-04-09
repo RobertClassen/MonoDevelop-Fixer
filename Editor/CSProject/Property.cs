@@ -18,6 +18,7 @@
 	internal partial class Property : ScriptableObject
 	{
 		#region Constants
+		private static readonly char[] separator = { '.' };
 		private const float popupWidth = 75f;
 		private const float buttonWidth = 60f;
 		private const float spaceWidth = 20f;
@@ -32,6 +33,8 @@
 		#endregion
 
 		#region Fields
+		[NonSerialized]
+		private string[] tags = null;
 		[SerializeField]
 		private List<Value> values = new List<Value>();
 		[NonSerialized]
@@ -46,7 +49,27 @@
 		#endregion
 
 		#region Properties
-		private string SelectedValue
+		public string[] Tags
+		{
+			get
+			{
+				if(tags == null)
+				{
+					tags = name.Split(separator);
+				}
+				return tags;
+			}
+		}
+
+		public EditMode SelectedEditMode
+		{
+			get
+			{
+				return selectedEditMode;
+			}
+		}
+
+		public string SelectedValue
 		{
 			get
 			{
@@ -72,27 +95,6 @@
 		#endregion
 
 		#region Methods
-		/// <summary>
-		/// Checks if a property with the same name exists in the passed contents a *csproj file and overwrites it.
-		/// </summary>
-		/// <returns>The contents</returns>
-		/// <param name="contents">Contents.</param>
-		public string ApplyTo(string contents)
-		{
-			if(selectedEditMode == Property.EditMode.Ignore)
-			{
-				return contents;
-			}
-
-			string startTag = string.Format("<{0}>", name);
-			string endTag = string.Format("</{0}>", name);
-			int startIndex = contents.IndexOf(startTag) + startTag.Length;
-			int endIndex = contents.IndexOf(endTag);
-			return startIndex < startTag.Length || endIndex < 0 ? contents : contents.Replace(
-				string.Format("{0}{1}{2}", startTag, contents.Substring(startIndex, endIndex - startIndex), endTag), 
-				string.Format("{0}{1}{2}", startTag, SelectedValue, endTag));
-		}
-
 		public void Draw()
 		{
 			using(new EditorGUILayout.HorizontalScope())
