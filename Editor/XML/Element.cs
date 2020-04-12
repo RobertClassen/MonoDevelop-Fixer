@@ -1,0 +1,44 @@
+﻿namespace RCDev.Postprocessors.XML
+{
+	using System;
+	using System.Collections;
+	using System.Collections.Generic;
+	using UnityEngine;
+
+	[Serializable]
+	internal partial class Element
+	{
+		#region Fields
+		[SerializeField]
+		private string name = string.Empty;
+		[SerializeField]
+		private Attribute[] attributes = null;
+		#endregion
+
+		#region Properties
+		public string Name
+		{
+			get
+			{
+				return name;
+			}
+		}
+
+		public Attribute[] Attributes
+		{
+			get
+			{
+				return attributes;
+			}
+		}
+		#endregion
+
+		#region Constructor
+
+		#endregion
+
+		#region Methods
+
+		#endregion
+	}
+}

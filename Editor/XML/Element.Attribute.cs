@@ -1,20 +1,20 @@
-﻿namespace RCDev.Postprocessors.CSProject
+﻿namespace RCDev.Postprocessors.XML
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
 
-	internal partial class Property
+	internal partial class Element
 	{
 		[Serializable]
-		internal class Value
+		internal class Attribute
 		{
 			#region Fields
 			[SerializeField]
 			private string name = string.Empty;
 			[SerializeField]
-			private string description = string.Empty;
+			private string value = string.Empty;
 			#endregion
 
 			#region Properties
@@ -26,11 +26,12 @@
 				}
 			}
 
-			public string Description
+
+			public string Value
 			{
 				get
 				{
-					return description;
+					return value;
 				}
 			}
 			#endregion

@@ -5,6 +5,7 @@
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Xml.Linq;
+	using RCDev.Postprocessors.XML;
 	using UnityEditor;
 	using UnityEngine;
 
@@ -33,7 +34,7 @@
 
 		#region Fields
 		private static string[] filePaths = null;
-		private static Property[] properties = null;
+		private static ElementDefinition[] elementDefinitions = null;
 		#endregion
 
 		#region Properties
@@ -43,21 +44,22 @@
 			{
 				if(filePaths == null)
 				{
-					filePaths = Directory.GetFiles(Path.GetFullPath(string.Format("{0}/..", Application.dataPath)), fileExtension);
+					filePaths = Directory.GetFiles(Path.GetFullPath(
+						string.Format("{0}/..", Application.dataPath)), fileExtension);
 				}
 				return filePaths;
 			}
 		}
 
-		private static Property[] Properties
+		private static ElementDefinition[] ElementDefinitions
 		{
 			get
 			{
-				if(properties == null)
+				if(elementDefinitions == null)
 				{
-					properties = Resources.LoadAll<Property>(string.Empty);
+					elementDefinitions = Resources.LoadAll<ElementDefinition>(string.Empty);
 				}
-				return properties;
+				return elementDefinitions;
 			}
 		}
 		#endregion
@@ -78,31 +80,32 @@
 		/// <param name="contents">Contents.</param>
 		static string OnGeneratedCSProject(string path, string contents)
 		{
-			return ApplyProperties(path, contents);
+			return ApplyElementDefinitions(path.Replace('/', '\\'), contents);
 		}
 
 		[MenuItem("Tools/Postprocessors/Update *.csproj files")]
 		static void UpdateAllCSProjectFiles()
 		{
+			filePaths = null;
 			for(int i = 0; i < FilePaths.Length; i++)
 			{
-				File.WriteAllText(filePaths[i], ApplyProperties(filePaths[i], File.ReadAllText(filePaths[i])));
+				File.WriteAllText(filePaths[i], ApplyElementDefinitions(filePaths[i], File.ReadAllText(filePaths[i])));
 			}
 		}
 
-		private static string ApplyProperties(string path, string contents)
+		protected static string ApplyElementDefinitions(string path, string contents)
 		{
 			XDocument xDocument;
 			using(StringReader stringReader = new StringReader(contents))
 			{
 				xDocument = XDocument.Load(stringReader);
-				foreach(Property property in Properties)
+				foreach(ElementDefinition elementDefinition in ElementDefinitions)
 				{
-					if(property.SelectedEditMode == Property.EditMode.Ignore)
+					if(elementDefinition.SelectedEditMode == ElementDefinition.EditMode.Ignore)
 					{
 						continue;
 					}
-					ApplyProperties(xDocument.Root, property, 0);
+					xDocument.Root.SetValueRecursively(elementDefinition, 0);
 				}
 			}
 			using(StringWriter stringWriter = new StringWriter())
@@ -112,33 +115,6 @@
 			}
 			Debug.LogFormat("[Postprocessor] File has been updated: {0}", path);
 			return contents;
-		}
-
-		/// <summary>
-		/// Recursively iterates over XML tree and applies the selected value of the passed Property if the name matches.
-		/// </summary>
-		private static void ApplyProperties(XElement xElement, Property property, int depth)
-		{
-			foreach(XElement child in xElement.Elements())
-			{
-				//TODO: compare attributes
-				if(child.Name.LocalName != property.Tags[depth])
-				{
-					return;
-				}
-
-				if(depth < property.Tags.Length - 1)
-				{
-					if(child.NodeType == System.Xml.XmlNodeType.Element && child.HasElements)
-					{
-						ApplyProperties(child, property, depth + 1);
-					}
-				}
-				else
-				{
-					child.Value = property.SelectedValue;
-				}
-			}
 		}
 
 		#if UNITY_2018_3_OR_NEWER
@@ -154,7 +130,7 @@
 		{
 			DrawFiles();
 			EditorGUILayout.LabelField(GUIContent.none, GUI.skin.horizontalSlider);
-			DrawProperties();
+			DrawElementDefinitions();
 		}
 
 		private static void DrawFiles()
@@ -188,36 +164,37 @@
 			}
 		}
 
-		private static void DrawProperties()
+		private static void DrawElementDefinitions()
 		{
 			using(new EditorGUILayout.HorizontalScope())
 			{
-				GUILayout.Label(string.Format("Found {0} Properties: ", (Properties != null ? properties.Length : 0)), EditorStyles.boldLabel);
+				GUILayout.Label(string.Format("Found {0} ElementDefinitions: ", 
+					(ElementDefinitions != null ? elementDefinitions.Length : 0)), EditorStyles.boldLabel);
 				GUILayout.FlexibleSpace();
 				if(GUILayout.Button("Search", GUILayout.Width(buttonWidth)))
 				{
-					properties = null;
+					elementDefinitions = null;
 					Debug.Log("[Postprocessor] The list of Properties has been refreshed.");
 				}
 			}
-			ValidateProperties();
-			foreach(Property property in Properties)
+			ValidateElementDefinitions();
+			foreach(ElementDefinition elementDefinition in ElementDefinitions)
 			{
 				EditorGUILayout.Space();
-				property.Draw();
+				elementDefinition.Draw();
 			}
 		}
 
 		/// <summary>
-		/// Removes missing references if a Property has been removed since the last call to avoid NullReferenceExceptions.
+		/// Removes missing references if an ElementDefinition has been removed since the last call to avoid NullReferenceExceptions.
 		/// </summary>
-		private static void ValidateProperties()
+		private static void ValidateElementDefinitions()
 		{
-			foreach(Property property in Properties)
+			foreach(ElementDefinition elementDefinition in ElementDefinitions)
 			{
-				if(property == null)
+				if(elementDefinition == null)
 				{
-					properties = null;
+					elementDefinitions = null;
 					return;
 				}
 			}

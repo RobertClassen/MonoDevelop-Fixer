@@ -1,4 +1,4 @@
-﻿namespace RCDev.Postprocessors.CSProject
+﻿namespace RCDev.Postprocessors
 {
 	using System;
 	using System.Collections;

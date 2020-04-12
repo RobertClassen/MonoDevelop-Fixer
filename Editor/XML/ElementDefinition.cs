@@ -1,21 +1,22 @@
-﻿namespace RCDev.Postprocessors.CSProject
+﻿namespace RCDev.Postprocessors.XML
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Xml.Linq;
 	using UnityEditor;
 	using UnityEngine;
 
 	/// <summary>
-	/// Describes which property with the same name should be overwritten in *.csproj files.
+	/// Defines which XML Element with the same parents and attributes should be overwritten in *.xml files.
 	/// </summary>
 	/// <remarks>
-	/// Instances must be placed in the Editor\Resources\ folder in order for the <see cref="Postprocessor"/> to find them.
+	/// Instances must be placed in a "Resources" folder to be found.
 	/// </remarks>
-	[CreateAssetMenu(menuName = "Postprocessors/CSProject/Property")]
+	[CreateAssetMenu(menuName = "Postprocessors/XML/ElementDefinition")]
 	[Serializable]
-	internal partial class Property : ScriptableObject
+	internal class ElementDefinition : ScriptableObject
 	{
 		#region Constants
 		private static readonly char[] separator = { '.' };
@@ -33,31 +34,28 @@
 		#endregion
 
 		#region Fields
-		[NonSerialized]
-		private string[] tags = null;
 		[SerializeField]
-		private List<Value> values = new List<Value>();
+		private Element[] elements = null;
+		[SerializeField]
+		private Element.Value[] valueOptions = null;
 		[NonSerialized]
 		private string[] valueNames = null;
+
 		[SerializeField]
 		private string infoURL = string.Empty;
 
 		[SerializeField]
 		private EditMode selectedEditMode = EditMode.Overwrite;
 		[SerializeField]
-		private int selectedValueIndex = 0;
+		private int selectedValueOptionIndex = 0;
 		#endregion
 
 		#region Properties
-		public string[] Tags
+		public Element[] Elements
 		{
 			get
 			{
-				if(tags == null)
-				{
-					tags = name.Split(separator);
-				}
-				return tags;
+				return elements;
 			}
 		}
 
@@ -69,11 +67,11 @@
 			}
 		}
 
-		public string SelectedValue
+		public string SelectedValueOption
 		{
 			get
 			{
-				return values[selectedValueIndex].Name;
+				return valueOptions[selectedValueOptionIndex].Name;
 			}
 		}
 
@@ -83,7 +81,7 @@
 			{
 				if(valueNames == null)
 				{
-					valueNames = values.Select(value => value.Name).ToArray();
+					valueNames = valueOptions.Select(valueOption => valueOption.Name).ToArray();
 				}
 				return valueNames;
 			}
@@ -101,15 +99,15 @@
 			{
 				selectedEditMode = (EditMode)EditorGUILayout.EnumPopup(selectedEditMode, GUILayout.Width(popupWidth));
 				GUILayout.Label(string.Format("<b>{0}</b>", name), GUIStyleUtility.RichTextLabel);
-				if(selectedEditMode != EditMode.Ignore && selectedValueIndex < values.Count)
+				if(selectedEditMode != EditMode.Ignore && selectedValueOptionIndex < valueOptions.Length)
 				{
 					GUILayout.Label("to");
-					selectedValueIndex = EditorGUILayout.Popup(selectedValueIndex, ValueNames, GUILayout.Width(popupWidth));
+					selectedValueOptionIndex = EditorGUILayout.Popup(selectedValueOptionIndex, ValueNames, GUILayout.Width(popupWidth));
 				}
 				GUILayout.FlexibleSpace();
 				DrawInfoURL();
 			}
-			DrawDescription();
+			DrawDefinition();
 		}
 
 		private void DrawInfoURL()
@@ -123,7 +121,7 @@
 			}
 		}
 
-		private void DrawDescription()
+		private void DrawDefinition()
 		{
 			if(selectedEditMode == EditMode.Ignore)
 			{
@@ -133,13 +131,13 @@
 			using(new EditorGUILayout.HorizontalScope())
 			{
 				GUILayout.Space(spaceWidth);
-				if(selectedValueIndex < values.Count)
+				if(selectedValueOptionIndex < valueOptions.Length)
 				{
-					GUILayout.Label(values[selectedValueIndex].Description);
+					GUILayout.Label(valueOptions[selectedValueOptionIndex].Description);
 				}
 				else
 				{
-					EditorGUILayout.HelpBox("This Property has no possible values to select from.", MessageType.Warning);
+					EditorGUILayout.HelpBox("This Element has no value options to select from.", MessageType.Warning);
 				}
 			}
 		}
