@@ -88,7 +88,7 @@
 		}
 		#endregion
 
-		#region Constructor
+		#region Constructors
 
 		#endregion
 

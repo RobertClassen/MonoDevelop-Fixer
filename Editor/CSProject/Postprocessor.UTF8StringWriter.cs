@@ -3,32 +3,22 @@
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.IO;
+	using System.Text;
 	using UnityEngine;
 
-	[Serializable]
-	internal partial class Element
+	internal class UTF8StringWriter : StringWriter
 	{
 		#region Fields
-		[SerializeField]
-		private string name = string.Empty;
-		[SerializeField]
-		private Attribute[] attributes = null;
+
 		#endregion
 
 		#region Properties
-		public string Name
-		{
+		public override Encoding Encoding
+		{ 
 			get
 			{
-				return name;
-			}
-		}
-
-		public Attribute[] Attributes
-		{
-			get
-			{
-				return attributes;
+				return Encoding.UTF8;
 			}
 		}
 		#endregion

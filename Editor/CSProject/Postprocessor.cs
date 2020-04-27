@@ -64,7 +64,7 @@
 		}
 		#endregion
 
-		#region Constructor
+		#region Constructors
 
 		#endregion
 
@@ -108,7 +108,7 @@
 					xDocument.Root.SetValueRecursively(elementDefinition, 0);
 				}
 			}
-			using(StringWriter stringWriter = new StringWriter())
+			using(StringWriter stringWriter = new UTF8StringWriter())
 			{
 				xDocument.Save(stringWriter);
 				contents = stringWriter.ToString();

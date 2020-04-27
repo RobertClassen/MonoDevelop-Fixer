@@ -33,7 +33,7 @@
 			}
 			#endregion
 
-			#region Constructor
+			#region Constructors
 			public SettingsProvider(string path, SettingsScope scope = SettingsScope.User) : base(path, scope)
 			{
 				keywords = KeyWords;
