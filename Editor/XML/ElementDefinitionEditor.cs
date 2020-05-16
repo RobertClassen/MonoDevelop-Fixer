@@ -11,9 +11,12 @@
 	{
 		#region Constants
 		private const float nameFieldWidth = 110f;
-		private const string elementDescription = "Nested Elements must be matched in the same order as below.";
-		private const string attributeDescription = "All respective Attributes must match but can be in any order.";
-		private const string valueOptionDescription = "If a matching Element is found its value will be replaced by the selected one below.";
+		private const string elementDescription = 
+			"Nested Elements must be matched in the same order as below.";
+		private const string attributeDescription = 
+			"All respective Attributes must match but can be in any order.";
+		private const string valueOptionDescription = 
+			"If a matching Element is found its value will be replaced by the selected one below.";
 		#endregion
 
 		#region Fields
@@ -98,10 +101,10 @@
 
 		private void DrawValueOptions(bool isDisabled)
 		{
+			SerializedProperty valueOptions = serializedObject.FindProperty("valueOptions");
+			SerializedProperty selectedValueOptionIndex = serializedObject.FindProperty("selectedValueOptionIndex");
 			using(new EditorGUI.DisabledScope(isDisabled))
 			{
-				SerializedProperty valueOptions = serializedObject.FindProperty("valueOptions");
-				SerializedProperty selectedValueOptionIndex = serializedObject.FindProperty("selectedValueOptionIndex");
 				EditorGUILayout.HelpBox(valueOptionDescription, MessageType.Info);
 				using(new EditorGUILayout.VerticalScope(GUI.skin.box))
 				{

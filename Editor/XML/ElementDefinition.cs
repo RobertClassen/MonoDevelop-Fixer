@@ -4,7 +4,6 @@
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
-	using System.Xml.Linq;
 	using UnityEditor;
 	using UnityEngine;
 
@@ -52,28 +51,13 @@
 
 		#region Properties
 		public Element[] Elements
-		{
-			get
-			{
-				return elements;
-			}
-		}
+		{ get { return elements; } }
 
 		public EditMode SelectedEditMode
-		{
-			get
-			{
-				return selectedEditMode;
-			}
-		}
+		{ get { return selectedEditMode; } }
 
 		public string SelectedValueOption
-		{
-			get
-			{
-				return valueOptions[selectedValueOptionIndex].Name;
-			}
-		}
+		{ get { return valueOptions[selectedValueOptionIndex].Name; } }
 
 		private string[] ValueNames
 		{
@@ -102,7 +86,8 @@
 				if(selectedEditMode != EditMode.Ignore && selectedValueOptionIndex < valueOptions.Length)
 				{
 					GUILayout.Label("to");
-					selectedValueOptionIndex = EditorGUILayout.Popup(selectedValueOptionIndex, ValueNames, GUILayout.Width(popupWidth));
+					selectedValueOptionIndex = EditorGUILayout.Popup(selectedValueOptionIndex, ValueNames, 
+						GUILayout.Width(popupWidth));
 				}
 				GUILayout.FlexibleSpace();
 				DrawInfoURL();

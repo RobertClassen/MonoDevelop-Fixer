@@ -17,20 +17,10 @@
 
 		#region Properties
 		public string Name
-		{
-			get
-			{
-				return name;
-			}
-		}
+		{ get { return name; } }
 
 		public Attribute[] Attributes
-		{
-			get
-			{
-				return attributes;
-			}
-		}
+		{ get { return attributes; } }
 		#endregion
 
 		#region Constructors

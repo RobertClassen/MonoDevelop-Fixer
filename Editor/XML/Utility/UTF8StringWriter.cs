@@ -15,12 +15,7 @@
 
 		#region Properties
 		public override Encoding Encoding
-		{ 
-			get
-			{
-				return Encoding.UTF8;
-			}
-		}
+		{ get { return Encoding.UTF8; } }
 		#endregion
 
 		#region Constructors

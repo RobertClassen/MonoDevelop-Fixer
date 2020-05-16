@@ -5,25 +5,14 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 
-	public static class GUIStyleUtility
+	internal static class GUIStyleUtility
 	{
 		#region Fields
-		public static GUIStyle richTextLabel = null;
+		public static GUIStyle RichTextLabel = new GUIStyle(GUI.skin.label){ richText = true };
 		#endregion
 
 		#region Properties
-		public static GUIStyle RichTextLabel
-		{
-			get
-			{
-				if(richTextLabel == null)
-				{
-					richTextLabel = new GUIStyle(GUI.skin.label);
-					richTextLabel.richText = true;
-				}
-				return richTextLabel;
-			}
-		}
+
 		#endregion
 
 		#region Constructors

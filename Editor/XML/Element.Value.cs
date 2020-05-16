@@ -19,20 +19,10 @@
 
 			#region Properties
 			public string Name
-			{
-				get
-				{
-					return name;
-				}
-			}
+			{ get { return name; } }
 
 			public string Description
-			{
-				get
-				{
-					return description;
-				}
-			}
+			{ get { return description; } }
 			#endregion
 
 			#region Constructors
