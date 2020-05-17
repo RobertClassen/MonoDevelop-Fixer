@@ -63,7 +63,7 @@
 		[MenuItem("Tools/Postprocessors/Update all *.csproj files", false, 0)]
 		static void UpdateAllCSProjectFiles()
 		{
-			filePaths = null;
+			filePaths = GetFilePaths();
 			for(int i = 0; i < filePaths.Length; i++)
 			{
 				File.WriteAllText(filePaths[i], ApplyElementDefinitions(filePaths[i], File.ReadAllText(filePaths[i])));
