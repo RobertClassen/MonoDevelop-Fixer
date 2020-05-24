@@ -27,6 +27,7 @@
 	internal partial class Postprocessor : AssetPostprocessor
 	{
 		#region Constants
+		private const string loggingPreferenceName = "Postprocessors.CSProject.IsLoggingEnabled";
 		private const string fileExtension = "*.csproj";
 		private const float buttonWidth = 40f;
 		private const float spaceWidth = 20f;
@@ -35,6 +36,7 @@
 		#region Fields
 		private static ElementDefinition[] elementDefinitions = LoadElementDefinitions();
 		private static string[] filePaths = GetFilePaths();
+		private static bool isLoggingEnabled = EditorPrefs.GetBool(loggingPreferenceName);
 		#endregion
 
 		#region Properties
@@ -100,7 +102,10 @@
 				xDocument.Save(stringWriter);
 				contents = stringWriter.ToString();
 			}
-			Debug.LogFormat("[Postprocessor] File has been updated: {0}", path);
+			if(isLoggingEnabled)
+			{
+				Debug.LogFormat("[Postprocessor] File has been updated: {0}", path);
+			}
 			return contents;
 		}
 
@@ -118,6 +123,8 @@
 			DrawFiles();
 			EditorGUILayout.LabelField(GUIContent.none, GUI.skin.horizontalSlider);
 			DrawElementDefinitions();
+			GUILayout.FlexibleSpace();
+			DrawSettings();
 		}
 
 		private static void DrawFiles()
@@ -127,7 +134,10 @@
 				if(GUILayout.Button("Find", GUILayout.Width(buttonWidth)))
 				{
 					filePaths = GetFilePaths();
-					Debug.Log("[Postprocessor] The list of *csproj files has been refreshed.");
+					if(isLoggingEnabled)
+					{
+						Debug.Log("[Postprocessor] The list of *csproj files has been refreshed.");
+					}
 				}
 				GUILayout.Label("The following *.csproj files will be updated by the Postprocessor:", EditorStyles.boldLabel);
 			}
@@ -155,7 +165,10 @@
 				if(GUILayout.Button("Find", GUILayout.Width(buttonWidth)))
 				{
 					elementDefinitions = LoadElementDefinitions();
-					Debug.Log("[Postprocessor] The list of Properties has been refreshed.");
+					if(isLoggingEnabled)
+					{
+						Debug.Log("[Postprocessor] The list of Properties has been refreshed.");
+					}
 				}
 				GUILayout.Label("The following ElementDefinitions will be applied: ", EditorStyles.boldLabel);
 			}
@@ -179,6 +192,16 @@
 					elementDefinitions = LoadElementDefinitions();
 					return;
 				}
+			}
+		}
+
+		private static void DrawSettings()
+		{
+			bool isLoggingEnabledNew = GUILayout.Toggle(isLoggingEnabled, "Log Events");
+			if(isLoggingEnabledNew != isLoggingEnabled)
+			{
+				EditorPrefs.SetBool(loggingPreferenceName, isLoggingEnabledNew);
+				isLoggingEnabled = isLoggingEnabledNew;
 			}
 		}
 
