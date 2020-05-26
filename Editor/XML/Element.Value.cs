@@ -1,4 +1,4 @@
-﻿namespace RCDev.Postprocessors.XML
+﻿namespace Postprocessors.XML
 {
 	using System;
 	using System.Collections;

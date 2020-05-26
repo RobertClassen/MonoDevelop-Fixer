@@ -1,11 +1,10 @@
-﻿namespace RCDev.Postprocessors.CSProject
+﻿namespace Postprocessors.XML.CSProject
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Xml.Linq;
-	using RCDev.Postprocessors.XML;
 	using UnityEditor;
 	using UnityEngine;
 
@@ -27,7 +26,7 @@
 	internal partial class Postprocessor : AssetPostprocessor
 	{
 		#region Constants
-		private const string loggingPreferenceName = "Postprocessors.CSProject.IsLoggingEnabled";
+		private const string loggingPreferenceName = "Postprocessors.XML.CSProject.IsLoggingEnabled";
 		private const string fileExtension = "*.csproj";
 		private const float buttonWidth = 40f;
 		private const float spaceWidth = 20f;
@@ -197,7 +196,7 @@
 
 		private static void DrawSettings()
 		{
-			bool isLoggingEnabledNew = GUILayout.Toggle(isLoggingEnabled, "Log Events");
+			bool isLoggingEnabledNew = GUILayout.Toggle(isLoggingEnabled, "Log to Console");
 			if(isLoggingEnabledNew != isLoggingEnabled)
 			{
 				EditorPrefs.SetBool(loggingPreferenceName, isLoggingEnabledNew);
