@@ -12,7 +12,7 @@ Unity frequently rebuilds these 4 different *.csproj files (if they exist):
 
 Doing this resets the "LangVersion" property within them to a value matching the newest version required by any script or *.dll in the project files.
 
-In my case this caused problems with the MonoDevelop IDE which would stop working correctly if the value was set to an unsupported version (no more code-completion, no more code-highlighting, no more error checking, no more options like "Go to Reference" (F12), etc.) so I wrote this little package to fix that by automatically setting the property to a supported value again each time.
+In my case this caused problems with the MonoDevelop IDE which would stop working correctly if the value was set to an unsupported version (no more code-completion, no more syntax-highlighting, no more error checking, no more options like "Go to Reference" (F12), etc.) so I wrote this little package to fix that by automatically setting the property to a supported value again each time.
 
 ## Setup
 
@@ -30,8 +30,8 @@ See [here](https://docs.unity3d.com/Manual/upm-localpath.html) for how to do so 
 3. On the right side make sure the "LangVersion" property is set to "Overwrite".
 4. In the dropdown next to it you can select the desired value to overwrite existing values with.
 
-Unity will automatically update the relevant files after certain events (recompiling scripts, restarting Unity, etc.).  
-If Unity does not do this automatically at some point (e.g. when there are compilation errors) you can trigger this manually via the "Tools/Postprocessors/Update *csproj files" menu item.
+Unity will automatically update the relevant files after certain events (restarting Unity, recompiling scripts, double-clicking Console entries, etc.).  
+If Unity does not do this automatically at some point (e.g. when there are compilation errors) you can trigger this manually via the "Tools/Postprocessors/Update all *csproj files" menu item.
 
 ## Note
 The current implementation only allows to overwrite or ignore the values of existing properties.  
