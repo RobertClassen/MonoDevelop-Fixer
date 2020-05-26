@@ -1,21 +1,22 @@
-﻿namespace RCDev.Postprocessors.CSProject
+﻿namespace Postprocessors.XML.CSProject
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.IO;
+	using System.Xml.Linq;
 	using UnityEditor;
 	using UnityEngine;
 
 	/// <summary>
-	/// Contains methods to overwrite the values of properties in *.csproj files after Unity updates them.
+	/// Overwrites the values of specified properties in *.csproj files after Unity updates them.
 	/// </summary>
 	/// <remarks>
 	/// <para>Unity frequently rebuilds these 4 different *.csproj files (if they exist):</para>
-	/// <para>* Assembly-CSharp-firstpass.csproj</para>
-	/// <para>* Assembly-CSharp-Editor-firstpass.csproj</para>
-	/// <para>* Assembly-CSharp.csproj</para>
-	/// <para>* Assembly-CSharp-Editor.csproj</para>
+	/// <para>* [Assembly-CSharp]-firstpass.csproj</para>
+	/// <para>* [Assembly-CSharp]-Editor-firstpass.csproj</para>
+	/// <para>* [Assembly-CSharp].csproj</para>
+	/// <para>* [Assembly-CSharp]-Editor.csproj</para>
 	/// <para>For more information see https://docs.unity3d.com/Manual/ScriptCompileOrderFolders.html</para>
 	/// <para>
 	/// This class must inherit from <see cref="AssetPostprocessor"/> since Unity searches for all classes which derive 
@@ -25,49 +26,29 @@
 	internal partial class Postprocessor : AssetPostprocessor
 	{
 		#region Constants
+		private const string loggingPreferenceName = "Postprocessors.XML.CSProject.IsLoggingEnabled";
 		private const string fileExtension = "*.csproj";
-		private const float buttonWidth = 60f;
+		private const float buttonWidth = 40f;
 		private const float spaceWidth = 20f;
 		#endregion
 
 		#region Fields
-		private static string[] filePaths = null;
-		private static Property[] properties = null;
+		private static ElementDefinition[] elementDefinitions = LoadElementDefinitions();
+		private static string[] filePaths = GetFilePaths();
+		private static bool isLoggingEnabled = EditorPrefs.GetBool(loggingPreferenceName);
 		#endregion
 
 		#region Properties
-		private static string[] FilePaths
-		{
-			get
-			{
-				if(filePaths == null)
-				{
-					filePaths = Directory.GetFiles(Path.GetFullPath(string.Format("{0}/..", Application.dataPath)), fileExtension);
-				}
-				return filePaths;
-			}
-		}
 
-		private static Property[] Properties
-		{
-			get
-			{
-				if(properties == null)
-				{
-					properties = Resources.LoadAll<Property>(string.Empty);
-				}
-				return properties;
-			}
-		}
 		#endregion
 
-		#region Constructor
+		#region Constructors
 
 		#endregion
 
 		#region Methods
 		/// <summary>
-		/// This method is called automatically by Unity after a *.csproj file has been updated.
+		/// Gets called automatically by Unity after a *.csproj file has been updated.
 		/// </summary>
 		/// <remarks>
 		/// For implemetation details see 
@@ -77,25 +58,53 @@
 		/// <param name="contents">Contents.</param>
 		static string OnGeneratedCSProject(string path, string contents)
 		{
-			return ApplyProperties(path, contents);
+			return ApplyElementDefinitions(path.Replace('/', '\\'), contents);
 		}
 
-		[MenuItem("Tools/Postprocessors/Update *.csproj files")]
+		[MenuItem("Tools/Postprocessors/Update all *.csproj files", false, 0)]
 		static void UpdateAllCSProjectFiles()
 		{
-			for(int i = 0; i < FilePaths.Length; i++)
+			filePaths = GetFilePaths();
+			for(int i = 0; i < filePaths.Length; i++)
 			{
-				File.WriteAllText(filePaths[i], ApplyProperties(filePaths[i], File.ReadAllText(filePaths[i])));
+				File.WriteAllText(filePaths[i], ApplyElementDefinitions(filePaths[i], File.ReadAllText(filePaths[i])));
 			}
 		}
 
-		private static string ApplyProperties(string path, string contents)
+		[MenuItem("Tools/Postprocessors/Open Preferences", false, 1)]
+		static void OpenPreferences()
 		{
-			foreach(Property property in Properties)
+			#if UNITY_2018_3_OR_NEWER
+			SettingsService.OpenUserPreferences("Preferences/CSProject");
+			#else
+			EditorApplication.ExecuteMenuItem("Edit/Preferences...");
+			#endif
+		}
+
+		private static string ApplyElementDefinitions(string path, string contents)
+		{
+			XDocument xDocument;
+			using(StringReader stringReader = new StringReader(contents))
 			{
-				contents = property.ApplyTo(contents);
+				xDocument = XDocument.Load(stringReader);
+				foreach(ElementDefinition elementDefinition in elementDefinitions)
+				{
+					if(elementDefinition.SelectedEditMode == ElementDefinition.EditMode.Ignore)
+					{
+						continue;
+					}
+					xDocument.Root.SetValueRecursively(elementDefinition, 0);
+				}
 			}
-			Debug.LogFormat("[Postprocessor] File has been updated: {0}", path);
+			using(StringWriter stringWriter = new UTF8StringWriter())
+			{
+				xDocument.Save(stringWriter);
+				contents = stringWriter.ToString();
+			}
+			if(isLoggingEnabled)
+			{
+				Debug.LogFormat("[Postprocessor] File has been updated: {0}", path);
+			}
 			return contents;
 		}
 
@@ -112,73 +121,97 @@
 		{
 			DrawFiles();
 			EditorGUILayout.LabelField(GUIContent.none, GUI.skin.horizontalSlider);
-			DrawProperties();
+			DrawElementDefinitions();
+			GUILayout.FlexibleSpace();
+			DrawSettings();
 		}
 
 		private static void DrawFiles()
 		{
 			using(new EditorGUILayout.HorizontalScope())
 			{
+				if(GUILayout.Button("Find", GUILayout.Width(buttonWidth)))
+				{
+					filePaths = GetFilePaths();
+					if(isLoggingEnabled)
+					{
+						Debug.Log("[Postprocessor] The list of *csproj files has been refreshed.");
+					}
+				}
 				GUILayout.Label("The following *.csproj files will be updated by the Postprocessor:", EditorStyles.boldLabel);
-				GUILayout.FlexibleSpace();
-				if(GUILayout.Button("Update", GUILayout.Width(buttonWidth)))
-				{
-					UpdateAllCSProjectFiles();
-				}
-				if(GUILayout.Button("Search", GUILayout.Width(buttonWidth)))
-				{
-					filePaths = null;
-					Debug.Log("[Postprocessor] The list of *csproj files has been refreshed.");
-				}
 			}
-			foreach(string filePath in FilePaths)
+			foreach(string filePath in filePaths)
 			{
 				using(new EditorGUILayout.HorizontalScope())
 				{
-					GUILayout.Space(spaceWidth);
-					GUILayout.Label(filePath);
-					GUILayout.FlexibleSpace();
 					if(GUILayout.Button("Show", GUILayout.Width(buttonWidth)))
 					{
 						EditorUtility.RevealInFinder(filePath);
 					}
+					GUILayout.Label(filePath);
 				}
+			}
+			if(GUILayout.Button("Update all *.csproj files"))
+			{
+				UpdateAllCSProjectFiles();
 			}
 		}
 
-		private static void DrawProperties()
+		private static void DrawElementDefinitions()
 		{
 			using(new EditorGUILayout.HorizontalScope())
 			{
-				GUILayout.Label(string.Format("Found {0} Properties: ", (Properties != null ? properties.Length : 0)), EditorStyles.boldLabel);
-				GUILayout.FlexibleSpace();
-				if(GUILayout.Button("Search", GUILayout.Width(buttonWidth)))
+				if(GUILayout.Button("Find", GUILayout.Width(buttonWidth)))
 				{
-					properties = null;
-					Debug.Log("[Postprocessor] The list of Properties has been refreshed.");
+					elementDefinitions = LoadElementDefinitions();
+					if(isLoggingEnabled)
+					{
+						Debug.Log("[Postprocessor] The list of Properties has been refreshed.");
+					}
 				}
+				GUILayout.Label("The following ElementDefinitions will be applied: ", EditorStyles.boldLabel);
 			}
-			ValidateProperties();
-			foreach(Property property in Properties)
+			ValidateElementDefinitions();
+			foreach(ElementDefinition elementDefinition in elementDefinitions)
 			{
 				EditorGUILayout.Space();
-				property.Draw();
+				elementDefinition.Draw();
 			}
 		}
 
 		/// <summary>
-		/// Removes missing references if a Property has been removed since the last call to avoid NullReferenceExceptions.
+		/// Updates references if an ElementDefinition has been removed since the last call to avoid NullReferenceExceptions.
 		/// </summary>
-		private static void ValidateProperties()
+		private static void ValidateElementDefinitions()
 		{
-			foreach(Property property in Properties)
+			foreach(ElementDefinition elementDefinition in elementDefinitions)
 			{
-				if(property == null)
+				if(elementDefinition == null)
 				{
-					properties = null;
+					elementDefinitions = LoadElementDefinitions();
 					return;
 				}
 			}
+		}
+
+		private static void DrawSettings()
+		{
+			bool isLoggingEnabledNew = GUILayout.Toggle(isLoggingEnabled, "Log to Console");
+			if(isLoggingEnabledNew != isLoggingEnabled)
+			{
+				EditorPrefs.SetBool(loggingPreferenceName, isLoggingEnabledNew);
+				isLoggingEnabled = isLoggingEnabledNew;
+			}
+		}
+
+		private static string[] GetFilePaths()
+		{
+			return Directory.GetFiles(Path.GetFullPath(string.Format("{0}/..", Application.dataPath)), fileExtension);
+		}
+
+		private static ElementDefinition[] LoadElementDefinitions()
+		{
+			return Resources.LoadAll<ElementDefinition>(string.Empty);
 		}
 		#endregion
 	}

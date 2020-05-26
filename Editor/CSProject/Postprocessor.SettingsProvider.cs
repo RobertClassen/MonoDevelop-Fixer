@@ -1,4 +1,4 @@
-﻿namespace RCDev.Postprocessors.CSProject
+﻿namespace Postprocessors.XML.CSProject
 {
 	using System;
 	using System.Collections;
@@ -12,7 +12,7 @@
 		/// <summary>
 		/// Provides a minimalistic implementation to replace the obsolete <see cref="PreferenceItem"/> attribute.
 		/// </summary>
-		public class SettingsProvider : UnityEditor.SettingsProvider
+		internal class SettingsProvider : UnityEditor.SettingsProvider
 		{
 			#region Fields
 
@@ -24,16 +24,16 @@
 				get
 				{
 					HashSet<string> keyWords = new HashSet<string>{ "CSProject" };
-					for(int i = 0; i < Properties.Length; i++)
+					for(int i = 0; i < elementDefinitions.Length; i++)
 					{
-						keyWords.Add(properties[i].name);
+						keyWords.Add(elementDefinitions[i].name);
 					}
 					return keyWords;
 				}
 			}
 			#endregion
 
-			#region Constructor
+			#region Constructors
 			public SettingsProvider(string path, SettingsScope scope = SettingsScope.User) : base(path, scope)
 			{
 				keywords = KeyWords;
