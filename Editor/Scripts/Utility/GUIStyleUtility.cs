@@ -8,11 +8,12 @@
 	internal static class GUIStyleUtility
 	{
 		#region Fields
-		public static GUIStyle RichTextLabel = new GUIStyle(GUI.skin.label){ richText = true };
+		private static GUIStyle richTextLabel = new GUIStyle(GUI.skin.label){ richText = true };
 		#endregion
 
 		#region Properties
-
+		public static GUIStyle RichTextLabel
+		{ get { return richTextLabel; } }
 		#endregion
 
 		#region Constructors
