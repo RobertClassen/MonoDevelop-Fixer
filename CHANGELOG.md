@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2020-05-26
+## [3.0.1] - 2020-10-01
+### Changed
+- Made buttons slightly wider to fit text better when using Unity versions with new Editor style.
+
+## [3.0.0] - 2020-05-26
 ### Changed
 - Changed Postprocessor to read *.csproj files as XML files and compare their elements to replace defined values instead of using string.Replace based on indices of tags.
 
