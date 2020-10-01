@@ -28,7 +28,7 @@
 		#region Constants
 		private const string loggingPreferenceName = "Postprocessors.XML.CSProject.IsLoggingEnabled";
 		private const string fileExtension = "*.csproj";
-		private const float buttonWidth = 40f;
+		private const float buttonWidth = 50f;
 		private const float spaceWidth = 20f;
 		#endregion
 
