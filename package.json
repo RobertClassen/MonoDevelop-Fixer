@@ -1,10 +1,11 @@
 {
   "name": "com.robert_classen.postprocessors",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "displayName": "Postprocessors",
   "description": "This package contains a Postprocessor for *.csproj files to overwrite certain properties inside of them.",
   "keywords": [
-    "Postprocessor", "CSProject"
+    "Postprocessor",
+    "CSProject"
   ],
   "author": {
     "name": "Robert Classen",
