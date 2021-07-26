@@ -165,10 +165,6 @@
 				if(GUILayout.Button("Find", buttonWidth))
 				{
 					elementDefinitions = LoadElementDefinitions();
-					if(isLoggingEnabled)
-					{
-						Debug.Log(description + " The list of Properties has been refreshed.");
-					}
 				}
 				GUILayout.Label("The following ElementDefinitions will be applied: ", EditorStyles.boldLabel);
 			}
@@ -212,6 +208,10 @@
 
 		private static ElementDefinition[] LoadElementDefinitions()
 		{
+			if(isLoggingEnabled)
+			{
+				Debug.Log(description + " Updating ElementDefinitions.");
+			}
 			return Resources.LoadAll<ElementDefinition>(string.Empty);
 		}
 		#endregion
