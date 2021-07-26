@@ -26,10 +26,14 @@
 	internal partial class Postprocessor : AssetPostprocessor
 	{
 		#region Constants
-		private const string loggingPreferenceName = "Postprocessors.XML.CSProject.IsLoggingEnabled";
+		private const string name = "MonoDevelop Fixer";
+		private const string menuPath = "Tools/" + name + "/";
+		private const string preferencesPath = "Preferences/" + name;
+		private const string description = "[" + name + "]";
 		private const string fileExtension = "*.csproj";
 		private const float buttonWidth = 50f;
 		private const float spaceWidth = 20f;
+		private static readonly string loggingPreferenceName = typeof(Postprocessor).FullName + ".isLoggingEnabled";
 		#endregion
 
 		#region Fields
@@ -54,14 +58,12 @@
 		/// For implemetation details see 
 		/// https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/AssetPostprocessor.cs#L154-L167
 		/// </remarks>
-		/// <param name="path">Path.</param>
-		/// <param name="contents">Contents.</param>
 		static string OnGeneratedCSProject(string path, string contents)
 		{
-			return ApplyElementDefinitions(path.Replace('/', '\\'), contents);
+			return ApplyElementDefinitions(path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), contents);
 		}
 
-		[MenuItem("Tools/Postprocessors/Update all *.csproj files", false, 0)]
+		[MenuItem(menuPath + "Update all " + fileExtension + " files", false, 0)]
 		static void UpdateAllCSProjectFiles()
 		{
 			filePaths = GetFilePaths();
@@ -71,11 +73,11 @@
 			}
 		}
 
-		[MenuItem("Tools/Postprocessors/Open Preferences", false, 1)]
+		[MenuItem(menuPath + "Open Preferences", false, 1)]
 		static void OpenPreferences()
 		{
 			#if UNITY_2018_3_OR_NEWER
-			SettingsService.OpenUserPreferences("Preferences/CSProject");
+			SettingsService.OpenUserPreferences(preferencesPath);
 			#else
 			EditorApplication.ExecuteMenuItem("Edit/Preferences...");
 			#endif
@@ -93,7 +95,7 @@
 					{
 						continue;
 					}
-					xDocument.Root.SetValueRecursively(elementDefinition, 0);
+					xDocument.Root.SetValueRecursively(elementDefinition);
 				}
 			}
 			using(StringWriter stringWriter = new UTF8StringWriter())
@@ -103,7 +105,7 @@
 			}
 			if(isLoggingEnabled)
 			{
-				Debug.LogFormat("[Postprocessor] File has been updated: {0}", path);
+				Debug.LogFormat(description + " File has been updated: {0}", path);
 			}
 			return contents;
 		}
@@ -112,10 +114,10 @@
 		[SettingsProvider]
 		private static UnityEditor.SettingsProvider GetSettingsProvider()
 		{
-			return new SettingsProvider("Preferences/CSProject");
+			return new SettingsProvider(preferencesPath);
 		}
 		#else
-		[PreferenceItem("CSProject")]
+		[PreferenceItem(name)]
 		#endif
 		private static void Draw()
 		{
@@ -135,10 +137,10 @@
 					filePaths = GetFilePaths();
 					if(isLoggingEnabled)
 					{
-						Debug.Log("[Postprocessor] The list of *csproj files has been refreshed.");
+						Debug.Log(description + " The list of " + fileExtension + " files has been refreshed.");
 					}
 				}
-				GUILayout.Label("The following *.csproj files will be updated by the Postprocessor:", EditorStyles.boldLabel);
+				GUILayout.Label("The following " + fileExtension + " files will be updated:", EditorStyles.boldLabel);
 			}
 			foreach(string filePath in filePaths)
 			{
@@ -151,7 +153,7 @@
 					GUILayout.Label(filePath);
 				}
 			}
-			if(GUILayout.Button("Update all *.csproj files"))
+			if(GUILayout.Button("Update all " + fileExtension + " files"))
 			{
 				UpdateAllCSProjectFiles();
 			}
@@ -166,7 +168,7 @@
 					elementDefinitions = LoadElementDefinitions();
 					if(isLoggingEnabled)
 					{
-						Debug.Log("[Postprocessor] The list of Properties has been refreshed.");
+						Debug.Log(description + " The list of Properties has been refreshed.");
 					}
 				}
 				GUILayout.Label("The following ElementDefinitions will be applied: ", EditorStyles.boldLabel);
@@ -206,7 +208,7 @@
 
 		private static string[] GetFilePaths()
 		{
-			return Directory.GetFiles(Path.GetFullPath(string.Format("{0}/..", Application.dataPath)), fileExtension);
+			return Directory.GetFiles(Path.GetFullPath(Application.dataPath + "/.."), fileExtension);
 		}
 
 		private static ElementDefinition[] LoadElementDefinitions()

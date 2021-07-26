@@ -13,12 +13,11 @@
 	/// <remarks>
 	/// Instances must be placed in a "Resources" folder to be found.
 	/// </remarks>
-	[CreateAssetMenu(menuName = "Postprocessors/XML/ElementDefinition")]
+	[CreateAssetMenu(menuName = "MonoDevelopFixer/XML/ElementDefinition")]
 	[Serializable]
 	internal class ElementDefinition : ScriptableObject
 	{
 		#region Constants
-		private static readonly char[] separator = { '.' };
 		private const float popupWidth = 75f;
 		private const float buttonWidth = 60f;
 		private const float spaceWidth = 20f;
@@ -41,7 +40,7 @@
 		private string[] valueNames = null;
 
 		[SerializeField]
-		private string infoURL = string.Empty;
+		private string infoURL = null;
 
 		[SerializeField]
 		private EditMode selectedEditMode = EditMode.Overwrite;

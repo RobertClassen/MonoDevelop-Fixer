@@ -23,7 +23,7 @@
 			{
 				get
 				{
-					HashSet<string> keyWords = new HashSet<string>{ "CSProject" };
+					HashSet<string> keyWords = new HashSet<string>{ name };
 					for(int i = 0; i < elementDefinitions.Length; i++)
 					{
 						keyWords.Add(elementDefinitions[i].name);

@@ -12,9 +12,9 @@
 		{
 			#region Fields
 			[SerializeField]
-			private string name = string.Empty;
+			private string name = null;
 			[SerializeField]
-			private string description = string.Empty;
+			private string description = null;
 			#endregion
 
 			#region Properties
