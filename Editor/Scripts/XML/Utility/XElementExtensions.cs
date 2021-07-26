@@ -1,4 +1,4 @@
-﻿namespace Postprocessors.XML
+﻿namespace MonoDevelopFixer.XML
 {
 	using System;
 	using System.Collections;

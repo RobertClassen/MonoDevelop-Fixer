@@ -1,4 +1,4 @@
-﻿namespace Postprocessors.XML.CSProject
+﻿namespace MonoDevelopFixer.XML.CSProject
 {
 	using System;
 	using System.Collections;
