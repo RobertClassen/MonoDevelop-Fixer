@@ -1,4 +1,4 @@
-﻿namespace Postprocessors.XML
+﻿namespace MonoDevelopFixer.XML
 {
 	using System;
 	using System.Collections;
@@ -10,7 +10,9 @@
 	internal class ElementDefinitionEditor : Editor
 	{
 		#region Constants
-		private const float nameFieldWidth = 110f;
+		private static readonly GUILayoutOption nameFieldWidth = GUILayout.Width(110f);
+		private static readonly GUILayoutOption toggleWidth = GUILayout.Width(15f);
+		private const float spaceWidth = 20f;
 		private const string elementDescription = 
 			"Nested Elements must be matched in the same order as below.";
 		private const string attributeDescription = 
@@ -56,10 +58,10 @@
 			{
 				using(new EditorGUILayout.HorizontalScope())
 				{
-					EditorGUILayout.LabelField("Element Hierarchy", GUILayout.Width(nameFieldWidth));
+					EditorGUILayout.LabelField("Element Hierarchy", nameFieldWidth);
 					elements.arraySize = EditorGUILayout.IntField(elements.arraySize);
 				}
-				DrawHeader(20f, "Name", "Attributes");
+				DrawHeader("Name", "Attributes", 1);
 				for(int i = 0; i < elements.arraySize; i++)
 				{
 					DrawElement(elements.GetArrayElementAtIndex(i));
@@ -74,12 +76,12 @@
 			using(new EditorGUILayout.HorizontalScope())
 			{
 				GUILayout.Space(20f);
-				name.stringValue = EditorGUILayout.TextField(name.stringValue, GUILayout.Width(nameFieldWidth));
+				name.stringValue = EditorGUILayout.TextField(name.stringValue, nameFieldWidth);
 				attributes.arraySize = EditorGUILayout.IntField(attributes.arraySize);
 			}
 			if(attributes.arraySize > 0)
 			{
-				DrawHeader(40f, "Name", "Value");
+				DrawHeader("Name", "Value", 2);
 				for(int j = 0; j < attributes.arraySize; j++)
 				{
 					DrawAttribute(attributes.GetArrayElementAtIndex(j));
@@ -94,7 +96,7 @@
 			using(new EditorGUILayout.HorizontalScope())
 			{
 				GUILayout.Space(40f);
-				name.stringValue = EditorGUILayout.TextField(name.stringValue, GUILayout.Width(nameFieldWidth));
+				name.stringValue = EditorGUILayout.TextField(name.stringValue, nameFieldWidth);
 				value.stringValue = EditorGUILayout.TextField(value.stringValue);
 			}
 		}
@@ -110,10 +112,10 @@
 				{
 					using(new EditorGUILayout.HorizontalScope())
 					{
-						EditorGUILayout.LabelField("Value Options", GUILayout.Width(nameFieldWidth));
+						EditorGUILayout.LabelField("Value Options", nameFieldWidth);
 						valueOptions.arraySize = EditorGUILayout.IntField(valueOptions.arraySize);
 					}
-					DrawHeader(20f, "Value", "Description");
+					DrawHeader("Value", "Description", 1);
 					int index = selectedValueOptionIndex.intValue;
 					for(int i = 0; i < valueOptions.arraySize; i++)
 					{
@@ -133,19 +135,19 @@
 			SerializedProperty description = valueOption.FindPropertyRelative("description");
 			using(new EditorGUILayout.HorizontalScope())
 			{
-				isSelected = EditorGUILayout.Toggle(isSelected, GUILayout.Width(15f));
-				name.stringValue = EditorGUILayout.TextField(name.stringValue, GUILayout.Width(nameFieldWidth));
+				isSelected = EditorGUILayout.Toggle(isSelected, toggleWidth);
+				name.stringValue = EditorGUILayout.TextField(name.stringValue, nameFieldWidth);
 				description.stringValue = EditorGUILayout.TextField(description.stringValue);
 			}
 			return isSelected;
 		}
 
-		private void DrawHeader(float indentation, string titleLeft, string titleRight)
+		private void DrawHeader(string titleLeft, string titleRight, int indentationLevel)
 		{
 			using(new EditorGUILayout.HorizontalScope())
 			{
-				GUILayout.Space(indentation);
-				EditorGUILayout.LabelField(titleLeft, GUILayout.Width(nameFieldWidth));
+				GUILayout.Space(indentationLevel * spaceWidth);
+				EditorGUILayout.LabelField(titleLeft, nameFieldWidth);
 				EditorGUILayout.LabelField(titleRight);
 			}
 		}

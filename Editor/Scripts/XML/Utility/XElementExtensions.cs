@@ -1,4 +1,4 @@
-﻿namespace Postprocessors.XML
+﻿namespace MonoDevelopFixer.XML
 {
 	using System;
 	using System.Collections;
@@ -27,7 +27,7 @@
 		/// Recursively expands XElements if their names and Attributes matches the passed ElementDefinition. 
 		/// Applies the SelectedValueOption to leaves.
 		/// </summary>
-		public static void SetValueRecursively(this XElement xElement, ElementDefinition elementDefinition, int depth)
+		public static void SetValueRecursively(this XElement xElement, ElementDefinition elementDefinition, int depth = 0)
 		{
 			foreach(XElement child in xElement.Elements())
 			{
@@ -35,12 +35,14 @@
 				{
 					return;
 				}
+
 				XAttribute[] xAttributes = child.Attributes().ToArray();
 				Element.Attribute[] attributes = elementDefinition.Elements[depth].Attributes;
 				if(xAttributes.Length != attributes.Length)
 				{
 					return;
 				}
+
 				foreach(Element.Attribute attribute in attributes)
 				{
 					if(!xAttributes.Any(xAttribute => 

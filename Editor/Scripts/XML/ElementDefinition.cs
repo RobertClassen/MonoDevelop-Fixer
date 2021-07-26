@@ -1,4 +1,4 @@
-﻿namespace Postprocessors.XML
+﻿namespace MonoDevelopFixer.XML
 {
 	using System;
 	using System.Collections;
@@ -13,14 +13,13 @@
 	/// <remarks>
 	/// Instances must be placed in a "Resources" folder to be found.
 	/// </remarks>
-	[CreateAssetMenu(menuName = "Postprocessors/XML/ElementDefinition")]
+	[CreateAssetMenu(menuName = "MonoDevelopFixer/XML/ElementDefinition")]
 	[Serializable]
 	internal class ElementDefinition : ScriptableObject
 	{
 		#region Constants
-		private static readonly char[] separator = { '.' };
-		private const float popupWidth = 75f;
-		private const float buttonWidth = 60f;
+		private static readonly GUILayoutOption popupWidth = GUILayout.Width(75f);
+		private static readonly GUILayoutOption buttonWidth = GUILayout.Width(60f);
 		private const float spaceWidth = 20f;
 		#endregion
 
@@ -41,7 +40,7 @@
 		private string[] valueNames = null;
 
 		[SerializeField]
-		private string infoURL = string.Empty;
+		private string infoURL = null;
 
 		[SerializeField]
 		private EditMode selectedEditMode = EditMode.Overwrite;
@@ -81,13 +80,12 @@
 		{
 			using(new EditorGUILayout.HorizontalScope())
 			{
-				selectedEditMode = (EditMode)EditorGUILayout.EnumPopup(selectedEditMode, GUILayout.Width(popupWidth));
+				selectedEditMode = (EditMode)EditorGUILayout.EnumPopup(selectedEditMode, popupWidth);
 				GUILayout.Label(string.Format("<b>{0}</b>", name), GUIStyleUtility.RichTextLabel);
 				if(selectedEditMode != EditMode.Ignore && selectedValueOptionIndex < valueOptions.Length)
 				{
 					GUILayout.Label("to");
-					selectedValueOptionIndex = EditorGUILayout.Popup(selectedValueOptionIndex, ValueNames, 
-						GUILayout.Width(popupWidth));
+					selectedValueOptionIndex = EditorGUILayout.Popup(selectedValueOptionIndex, ValueNames, popupWidth);
 				}
 				GUILayout.FlexibleSpace();
 				DrawInfoURL();
@@ -99,7 +97,7 @@
 		{
 			if(!string.IsNullOrEmpty(infoURL))
 			{
-				if(GUILayout.Button(new GUIContent("Info", infoURL), GUILayout.Width(buttonWidth)))
+				if(GUILayout.Button(new GUIContent("Info", infoURL), buttonWidth))
 				{
 					Help.BrowseURL(infoURL);
 				}

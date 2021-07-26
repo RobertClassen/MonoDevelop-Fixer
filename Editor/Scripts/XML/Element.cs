@@ -1,4 +1,4 @@
-﻿namespace Postprocessors.XML
+﻿namespace MonoDevelopFixer.XML
 {
 	using System;
 	using System.Collections;
@@ -10,7 +10,7 @@
 	{
 		#region Fields
 		[SerializeField]
-		private string name = string.Empty;
+		private string name = null;
 		[SerializeField]
 		private Attribute[] attributes = null;
 		#endregion

@@ -1,4 +1,4 @@
-﻿namespace Postprocessors
+﻿namespace MonoDevelopFixer
 {
 	using System;
 	using System.Collections;
