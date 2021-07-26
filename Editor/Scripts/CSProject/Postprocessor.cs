@@ -31,8 +31,7 @@
 		private const string preferencesPath = "Preferences/" + name;
 		private const string description = "[" + name + "]";
 		private const string fileExtension = "*.csproj";
-		private const float buttonWidth = 50f;
-		private const float spaceWidth = 20f;
+		private static readonly GUILayoutOption buttonWidth = GUILayout.Width(50f);
 		private static readonly string loggingPreferenceName = typeof(Postprocessor).FullName + ".isLoggingEnabled";
 		#endregion
 
@@ -132,7 +131,7 @@
 		{
 			using(new EditorGUILayout.HorizontalScope())
 			{
-				if(GUILayout.Button("Find", GUILayout.Width(buttonWidth)))
+				if(GUILayout.Button("Find", buttonWidth))
 				{
 					filePaths = GetFilePaths();
 					if(isLoggingEnabled)
@@ -146,7 +145,7 @@
 			{
 				using(new EditorGUILayout.HorizontalScope())
 				{
-					if(GUILayout.Button("Show", GUILayout.Width(buttonWidth)))
+					if(GUILayout.Button("Show", buttonWidth))
 					{
 						EditorUtility.RevealInFinder(filePath);
 					}
@@ -163,7 +162,7 @@
 		{
 			using(new EditorGUILayout.HorizontalScope())
 			{
-				if(GUILayout.Button("Find", GUILayout.Width(buttonWidth)))
+				if(GUILayout.Button("Find", buttonWidth))
 				{
 					elementDefinitions = LoadElementDefinitions();
 					if(isLoggingEnabled)
