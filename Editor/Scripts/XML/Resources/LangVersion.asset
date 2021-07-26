@@ -45,6 +45,10 @@ MonoBehaviour:
     description: The compiler accepts only syntax that is included in C# 7.3 or lower.
   - name: 8.0
     description: The compiler accepts only syntax that is included in C# 8.0 or lower.
+  - name: 9.0
+    description: The compiler accepts only syntax that is included in C# 9.0 or lower.
+  - name: 10.0
+    description: The compiler accepts only syntax that is included in C# 10.0 or lower.
   - name: latestMajor
     description: The compiler accepts all valid language syntax from the latest major
       version that it can support.
@@ -54,6 +58,6 @@ MonoBehaviour:
   - name: preview
     description: The compiler accepts all valid language syntax from the latest preview
       version that it can support.
-  infoURL: 
+  infoURL: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/configure-language-version#c-language-version-reference
   selectedEditMode: 1
   selectedValueOptionIndex: 6
