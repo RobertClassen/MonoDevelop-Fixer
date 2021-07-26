@@ -1,11 +1,10 @@
 {
   "name": "com.robert_classen.postprocessors",
-  "version": "3.0.2",
-  "displayName": "Postprocessors",
-  "description": "This package contains a Postprocessor for *.csproj files to overwrite certain properties inside of them.",
+  "version": "4.0.0",
+  "displayName": "MonoDevelop Fixer",
+  "description": "Changes the value of \"LangVersion\" XML Elements in *.csproj files to \"6\" to make MonoDevelop work again.",
   "keywords": [
-    "Postprocessor",
-    "CSProject"
+    "MonoDevelop Fixer"
   ],
   "author": {
     "name": "Robert Classen",
