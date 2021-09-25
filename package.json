@@ -1,6 +1,6 @@
 {
   "name": "com.robert_classen.postprocessors",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "displayName": "MonoDevelop Fixer",
   "description": "Changes the value of \"LangVersion\" XML Elements in *.csproj files to \"6\" to make MonoDevelop work again.",
   "keywords": [
