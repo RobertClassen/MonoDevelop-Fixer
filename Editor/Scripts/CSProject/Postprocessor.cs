@@ -38,6 +38,7 @@
 		#region Fields
 		private static ElementDefinition[] elementDefinitions = LoadElementDefinitions();
 		private static string[] filePaths = GetFilePaths();
+		private static string[] relativePaths = GetRelativePaths(filePaths);
 		private static bool isLoggingEnabled = EditorPrefs.GetBool(loggingPreferenceName);
 		#endregion
 
@@ -59,13 +60,14 @@
 		/// </remarks>
 		static string OnGeneratedCSProject(string path, string contents)
 		{
-			return ApplyElementDefinitions(path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), contents);
+			return ApplyElementDefinitions(path, contents);
 		}
 
 		[MenuItem(menuPath + "Update all " + fileExtension + " files", false, 0)]
 		static void UpdateAllCSProjectFiles()
 		{
 			filePaths = GetFilePaths();
+			relativePaths = GetRelativePaths(filePaths);
 			for(int i = 0; i < filePaths.Length; i++)
 			{
 				File.WriteAllText(filePaths[i], ApplyElementDefinitions(filePaths[i], File.ReadAllText(filePaths[i])));
@@ -134,6 +136,7 @@
 				if(GUILayout.Button("Find", buttonWidth))
 				{
 					filePaths = GetFilePaths();
+					relativePaths = GetRelativePaths(filePaths);
 					if(isLoggingEnabled)
 					{
 						Debug.Log(description + " The list of " + fileExtension + " files has been refreshed.");
@@ -141,15 +144,15 @@
 				}
 				GUILayout.Label("The following " + fileExtension + " files will be updated:", EditorStyles.boldLabel);
 			}
-			foreach(string filePath in filePaths)
+			for(int i = 0; i < filePaths.Length; i++)
 			{
 				using(new EditorGUILayout.HorizontalScope())
 				{
 					if(GUILayout.Button("Show", buttonWidth))
 					{
-						EditorUtility.RevealInFinder(filePath);
+						EditorUtility.RevealInFinder(filePaths[i]);
 					}
-					GUILayout.Label(filePath);
+					GUILayout.Label(relativePaths[i]);
 				}
 			}
 			if(GUILayout.Button("Update all " + fileExtension + " files"))
@@ -204,6 +207,22 @@
 		private static string[] GetFilePaths()
 		{
 			return Directory.GetFiles(Path.GetFullPath(Application.dataPath + "/.."), fileExtension);
+		}
+
+		private static string[] GetRelativePaths(string[] absolutePaths)
+		{
+			string[] relativePaths = new string[absolutePaths.Length];
+			string dataPathAlt = Application.dataPath.Replace("Assets", string.Empty);
+			string dataPath = dataPathAlt.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			int length = dataPath.Length;
+			for(int i = 0; i < relativePaths.Length; i++)
+			{
+				if(absolutePaths[i].StartsWith(dataPath) || absolutePaths[i].StartsWith(dataPathAlt))
+				{
+					relativePaths[i] = "..\\" + absolutePaths[i].Substring(length);
+				}
+			}
+			return relativePaths;
 		}
 
 		private static ElementDefinition[] LoadElementDefinitions()
